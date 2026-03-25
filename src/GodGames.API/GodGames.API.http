@@ -1,0 +1,6 @@
+@GodGames.API_HostAddress = http://localhost:5134
+
+GET {{GodGames.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
