@@ -207,4 +207,25 @@ public class GameEngineServiceTests
         Assert.True(successWithBoost > successWithout,
             "A large STR boost should produce more successes than no boost");
     }
+
+    [Theory]
+    [InlineData(4, Biome.Safe,      Biome.Safe)]       // level 4 → stays Safe
+    [InlineData(5, Biome.Safe,      Biome.Normal)]     // level 5 → advances to Normal
+    [InlineData(9, Biome.Normal,    Biome.Normal)]     // level 9 → stays Normal
+    [InlineData(10, Biome.Normal,   Biome.Dangerous)]  // level 10 → advances to Dangerous
+    [InlineData(15, Biome.Normal,   Biome.Dangerous)]  // already high level
+    public void ResolveEvent_BiomeAdvances_AtCorrectLevelThreshold(
+        int targetLevel, Biome startingBiome, Biome expectedBiome)
+    {
+        // Start one tick below the target level so one tick tips over
+        var champion = MakeChampion(xp: (targetLevel - 1) * 100 - 1, level: targetLevel - 1);
+        champion.Biome = startingBiome;
+
+        // Force a success by using an event with no requirements and enough XP to level up
+        // Run many ticks until the champion reaches the target level
+        for (int i = 0; i < 20 && champion.Level < targetLevel; i++)
+            Sut.ResolveEvent(champion, MakeEvent(), new StatEffect(STR: 100));
+
+        Assert.Equal(expectedBiome, champion.Biome);
+    }
 }

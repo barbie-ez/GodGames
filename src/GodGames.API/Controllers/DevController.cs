@@ -17,7 +17,7 @@ public class DevController(WorldTickJob tickJob, IWebHostEnvironment env) : Cont
     [HttpPost("tick")]
     public async Task<IActionResult> TriggerTick()
     {
-        if (!env.IsDevelopment())
+        if (!env.IsDevelopment() && !env.IsEnvironment("Testing"))
             return NotFound();
 
         await tickJob.ExecuteAsync();

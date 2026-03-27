@@ -2,6 +2,7 @@ using System.Text.Json;
 using GodGames.Application.Interfaces;
 using GodGames.Application.Models;
 using GodGames.Domain.Entities;
+using GodGames.Domain.Enums;
 using GodGames.Domain.ValueObjects;
 
 namespace GodGames.Application.Services;
@@ -60,6 +61,15 @@ public class GameEngineService : IGameEngineService
                 WIS = champion.Stats.WIS + 1,
                 VIT = champion.Stats.VIT + 1
             };
+
+            // Advance biome based on new level
+            champion.Biome = champion.Level switch
+            {
+                >= 10 => Biome.Dangerous,
+                >= 5  => Biome.Normal,
+                _     => champion.Biome
+            };
+
             leveledUp = true;
         }
 

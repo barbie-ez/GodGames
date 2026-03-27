@@ -79,7 +79,8 @@ if (app.Environment.IsDevelopment())
     app.UseHangfireDashboard("/hangfire");
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.EnvironmentName.Equals("Testing", StringComparison.OrdinalIgnoreCase))
+    app.UseHttpsRedirection();
 app.UseCors("BlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -87,3 +88,5 @@ app.MapControllers();
 app.MapHub<GameHub>("/hubs/game");
 
 app.Run();
+
+public partial class Program { }
