@@ -1,0 +1,59 @@
+@page "/champion/create"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+@inject NavigationManager Nav
+
+<PageTitle>Create Champion — God Games</PageTitle>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <h2 class="mb-1">Your Champion Awaits</h2>
+        <p class="text-muted mb-4">Forge a mortal to carry out your divine will.</p>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <div class="alert alert-danger">@_error</div>
+        }
+
+        <EditForm Model="_model" OnValidSubmit="HandleCreate">
+            <div class="mb-3">
+                <label class="form-label">Champion Name</label>
+                <InputText @bind-Value="_model.Name" class="form-control" placeholder="e.g. Aldric the Bold" />
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Class</label>
+                <InputSelect @bind-Value="_model.Class" class="form-select">
+                    <option value="@ChampionClass.Warrior">⚔️ Warrior</option>
+                    <option value="@ChampionClass.Mage">🔮 Mage</option>
+                    <option value="@ChampionClass.Rogue">🗡️ Rogue</option>
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" disabled="@_loading">
+                @(_loading ? "Summoning…" : "Summon Champion")
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private readonly ChampionFormModel _model = new();
+    private string? _error;
+    private bool _loading;
+
+    private async Task HandleCreate()
+    {
+        _loading = true;
+        _error = null;
+        var champion = await Api.CreateChampionAsync(new CreateChampionRequest(_model.Name, _model.Class));
+        _loading = false;
+
+        if (champion is not null) Nav.NavigateTo("/");
+        else _error = "Failed to create champion. You may already have one.";
+    }
+
+    private class ChampionFormModel
+    {
+        public string Name { get; set; } = "";
+        public ChampionClass Class { get; set; } = ChampionClass.Warrior;
+    }
+}

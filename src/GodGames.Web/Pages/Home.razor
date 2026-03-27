@@ -1,7 +1,205 @@
-﻿@page "/"
+@page "/"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+@inject GodGames.Web.Auth.GodAuthStateProvider AuthState
+@inject NavigationManager Nav
+@inject IConfiguration Config
+@implements IAsyncDisposable
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard — God Games</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Consulting the heavens…</p>
+    </div>
+}
+else if (_champion is not null)
+{
+    <div class="row g-4">
 
-Welcome to your new app.
+        <!-- Champion card -->
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="fw-bold fs-5">@_champion.Name</span>
+                    <span class="badge bg-secondary">Lv. @_champion.Level — @_champion.Class</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>HP</span><span>@_champion.HP / @_champion.MaxHP</span>
+                        </div>
+                        <div class="progress" style="height:10px">
+                            <div class="progress-bar bg-danger" style="width:@HpPercent%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small text-muted mb-1">
+                            <span>XP</span><span>@_champion.XP / @(_champion.Level * 100)</span>
+                        </div>
+                        <div class="progress" style="height:10px">
+                            <div class="progress-bar bg-success" style="width:@XpPercent%"></div>
+                        </div>
+                    </div>
+                    <div class="row text-center g-2 mt-1">
+                        <div class="col"><div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div></div>
+                        <div class="col"><div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div></div>
+                        <div class="col"><div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div></div>
+                        <div class="col"><div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div></div>
+                        <div class="col"><div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div></div>
+                    </div>
+                    <div class="mt-3 text-muted small">
+                        Biome: <strong>@_champion.Biome</strong> &nbsp;|&nbsp;
+                        Last tick: <strong>@_champion.LastTickAt.ToLocalTime().ToString("g")</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col-md-7">
+
+            <!-- Intervention panel -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header fw-bold">Divine Intervention</div>
+                <div class="card-body">
+                    @if (_interventionSent)
+                    {
+                        <div class="alert alert-success mb-0">
+                            Your command has been received. It will be applied on the next tick.
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted small mb-2">Issue a divine command to aid your champion (one per tick window).</p>
+                        <div class="input-group">
+                            <input @bind="_command" @bind:event="oninput"
+                                   class="form-control"
+                                   placeholder="e.g. blessed blade, heal, divine shield…"
+                                   @onkeydown="HandleCommandKey" />
+                            <button class="btn btn-primary"
+                                    @onclick="SubmitIntervention"
+                                    disabled="@(string.IsNullOrWhiteSpace(_command) || _interventionLoading)">
+                                @(_interventionLoading ? "…" : "Issue Command")
+                            </button>
+                        </div>
+                        @if (!string.IsNullOrEmpty(_interventionError))
+                        {
+                            <div class="text-danger small mt-1">@_interventionError</div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Narrative chronicle -->
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">Chronicle</div>
+                <div class="card-body p-0">
+                    @if (_narratives.Count == 0)
+                    {
+                        <p class="text-muted p-3 mb-0">No entries yet. The first tick will begin your champion's story.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var entry in _narratives)
+                            {
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span class="badge bg-light text-dark border">Tick @entry.TickNumber</span>
+                                        <span class="text-muted small">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
+                                    </div>
+                                    <p class="mb-0">@entry.StoryText</p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+    private ChampionDto? _champion;
+    private List<NarrativeEntryDto> _narratives = [];
+    private bool _loading = true;
+    private string _command = "";
+    private bool _interventionLoading;
+    private bool _interventionSent;
+    private string? _interventionError;
+    private HubConnection? _hub;
+
+    private double HpPercent => _champion is null ? 0
+        : Math.Round((double)_champion.HP / _champion.MaxHP * 100, 1);
+    private double XpPercent => _champion is null ? 0
+        : Math.Round((double)_champion.XP / (_champion.Level * 100) * 100, 1);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _champion = await Api.GetMyChampionAsync();
+
+        if (_champion is null)
+        {
+            Nav.NavigateTo("/champion/create");
+            return;
+        }
+
+        _narratives = await Api.GetNarrativesAsync();
+        _loading = false;
+
+        await StartSignalRAsync();
+    }
+
+    private async Task StartSignalRAsync()
+    {
+        var apiBase = Config["ApiBaseUrl"] ?? "https://localhost:7012";
+        var token = await AuthState.GetTokenAsync();
+
+        _hub = new HubConnectionBuilder()
+            .WithUrl($"{apiBase}/hubs/game", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(token);
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hub.On<ChampionDto>("ChampionUpdated", async updated =>
+        {
+            _champion = updated;
+            _narratives = await Api.GetNarrativesAsync();
+            _interventionSent = false;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        try { await _hub.StartAsync(); }
+        catch { /* non-fatal — dashboard works without live push */ }
+    }
+
+    private async Task SubmitIntervention()
+    {
+        if (string.IsNullOrWhiteSpace(_command) || _champion is null) return;
+        _interventionLoading = true;
+        _interventionError = null;
+
+        var ok = await Api.SubmitInterventionAsync(new SubmitInterventionRequest(_champion.Id, _command));
+        _interventionLoading = false;
+
+        if (ok) { _interventionSent = true; _command = ""; }
+        else _interventionError = "Command failed. You may already have a pending intervention this tick.";
+    }
+
+    private async Task HandleCommandKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await SubmitIntervention();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hub is not null)
+            await _hub.DisposeAsync();
+    }
+}

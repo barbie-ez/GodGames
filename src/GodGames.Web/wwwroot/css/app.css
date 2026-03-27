@@ -112,3 +112,21 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* Stat boxes on champion card */
+.stat-box {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 6px 4px;
+}
+.stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #6c757d;
+    font-weight: 600;
+}
+.stat-val {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #212529;
+}

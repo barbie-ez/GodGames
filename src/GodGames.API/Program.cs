@@ -15,6 +15,14 @@ builder.Host.UseSerilog((ctx, cfg) => cfg.ReadFrom.Configuration(ctx.Configurati
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddSignalR();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BlazorClient", policy =>
+        policy.WithOrigins("https://localhost:7071", "http://localhost:5058", "http://localhost:5134")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
+});
 
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
@@ -69,6 +77,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("BlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
