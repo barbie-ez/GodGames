@@ -1,5 +1,6 @@
 using GodGames.Domain.Entities;
 using GodGames.Infrastructure.Identity;
+using GodGames.Infrastructure.Persistence.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,5 +20,6 @@ public class GodGamesDbContext(DbContextOptions<GodGamesDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.Entity<WorldEvent>().HasData(WorldEventSeed.GetEvents());
     }
 }
