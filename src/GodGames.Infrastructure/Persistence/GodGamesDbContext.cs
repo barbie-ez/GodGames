@@ -1,12 +1,15 @@
 using GodGames.Domain.Entities;
+using GodGames.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace GodGames.Infrastructure.Persistence;
 
-public class GodGamesDbContext(DbContextOptions<GodGamesDbContext> options) : DbContext(options)
+public class GodGamesDbContext(DbContextOptions<GodGamesDbContext> options)
+    : IdentityDbContext<GodUser, IdentityRole<Guid>, Guid>(options)
 {
-    public DbSet<God> Gods => Set<God>();
     public DbSet<Champion> Champions => Set<Champion>();
     public DbSet<WorldEvent> WorldEvents => Set<WorldEvent>();
     public DbSet<Intervention> Interventions => Set<Intervention>();
@@ -14,7 +17,7 @@ public class GodGamesDbContext(DbContextOptions<GodGamesDbContext> options) : Db
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

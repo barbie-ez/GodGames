@@ -16,11 +16,6 @@ public class InterventionConfiguration : IEntityTypeConfiguration<Intervention>
         builder.Property(i => i.ParsedEffectJson)
             .HasColumnType("text");
 
-        builder.HasOne(i => i.God)
-            .WithMany()
-            .HasForeignKey(i => i.GodId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.HasOne(i => i.Champion)
             .WithMany(c => c.Interventions)
             .HasForeignKey(i => i.ChampionId)

@@ -10,6 +10,5 @@ public class Intervention
     public bool IsApplied { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
 
-    public God God { get; set; } = null!;
     public Champion Champion { get; set; } = null!;
 }

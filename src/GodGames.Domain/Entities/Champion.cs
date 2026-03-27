@@ -19,7 +19,6 @@ public class Champion
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset LastTickAt { get; set; }
 
-    public God God { get; set; } = null!;
     public ICollection<Intervention> Interventions { get; set; } = [];
     public ICollection<NarrativeEntry> NarrativeEntries { get; set; } = [];
 }
