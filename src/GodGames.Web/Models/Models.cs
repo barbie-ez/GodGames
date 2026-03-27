@@ -14,10 +14,11 @@ public record ChampionDto(
     Guid Id, Guid GodId, string Name, ChampionClass Class,
     int STR, int DEX, int INT, int WIS, int VIT,
     int HP, int MaxHP, int Level, int XP,
-    string? PowerUpSlot, Biome Biome,
+    string? PowerUpSlot, int PowerUpTicksRemaining, Biome Biome,
     DateTimeOffset CreatedAt, DateTimeOffset LastTickAt);
 
 public record NarrativeEntryDto(Guid Id, Guid ChampionId, int TickNumber, string StoryText, DateTimeOffset CreatedAt);
+public record LeaderboardEntryDto(int Rank, string Name, ChampionClass Class, int Level, int XP, Biome Biome);
 
 // Requests
 public record CreateChampionRequest(string Name, ChampionClass Class);

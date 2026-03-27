@@ -142,6 +142,81 @@ public class ChampionFlowTests(GodGamesApiFactory factory)
         Assert.Contains("The champion ventured forth", narratives[0].StoryText);
     }
 
+    [Fact]
+    public async Task Leaderboard_ReturnsAllChampions_Ranked()
+    {
+        // Create two champions from different accounts
+        var (client1, _) = await AuthenticatedClientAsync();
+        var (client2, _) = await AuthenticatedClientAsync();
+        await CreateChampionAsync(client1);
+        await CreateChampionAsync(client2);
+
+        // Leaderboard is public — use a bare client
+        var anonClient = factory.CreateClient();
+        var response = await anonClient.GetAsync("api/champions/leaderboard");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var entries = await response.Content.ReadFromJsonAsync<List<LeaderboardEntryDto>>();
+        Assert.NotNull(entries);
+        Assert.True(entries!.Count >= 2);
+        // Ranks should be sequential starting at 1
+        Assert.Equal(1, entries[0].Rank);
+        Assert.Equal(2, entries[1].Rank);
+    }
+
+    [Fact]
+    public async Task MultiTickPowerUp_PersistsAcrossTicks_ThenExpires()
+    {
+        var (client, _) = await AuthenticatedClientAsync();
+        var champion = await CreateChampionAsync(client);
+
+        // Submit a 3-tick power-up (blessed blade = DurationTicks: 3)
+        await client.PostAsJsonAsync("api/interventions",
+            new { championId = champion.Id, rawCommand = "blessed blade" });
+
+        // Tick 1 — power-up activates, 2 ticks remain after this tick
+        await client.PostAsync("api/dev/tick", null);
+        var after1 = await GetMyChampionAsync(client);
+        Assert.Equal("blessed blade", after1!.PowerUpSlot);
+        Assert.Equal(2, after1.PowerUpTicksRemaining);
+
+        // Tick 2 — carried over, 1 tick remains
+        await client.PostAsync("api/dev/tick", null);
+        var after2 = await GetMyChampionAsync(client);
+        Assert.Equal("blessed blade", after2!.PowerUpSlot);
+        Assert.Equal(1, after2.PowerUpTicksRemaining);
+
+        // Tick 3 — last tick, power-up expires
+        await client.PostAsync("api/dev/tick", null);
+        var after3 = await GetMyChampionAsync(client);
+        Assert.Null(after3!.PowerUpSlot);
+        Assert.Equal(0, after3.PowerUpTicksRemaining);
+    }
+
+    [Fact]
+    public async Task OneShotPowerUp_DoesNotSetPowerUpSlot()
+    {
+        var (client, _) = await AuthenticatedClientAsync();
+        var champion = await CreateChampionAsync(client);
+
+        // "heal" = DurationTicks: 0 (one-shot)
+        await client.PostAsJsonAsync("api/interventions",
+            new { championId = champion.Id, rawCommand = "heal" });
+
+        await client.PostAsync("api/dev/tick", null);
+        var updated = await GetMyChampionAsync(client);
+
+        Assert.Null(updated!.PowerUpSlot);
+        Assert.Equal(0, updated.PowerUpTicksRemaining);
+    }
+
+    private async Task<ChampionDto?> GetMyChampionAsync(HttpClient client)
+    {
+        var resp = await client.GetAsync("api/champions/me");
+        resp.EnsureSuccessStatusCode();
+        return await resp.Content.ReadFromJsonAsync<ChampionDto>();
+    }
+
     // ---------------------------------------------------------------------------
     // DTOs (match JSON shape returned by API)
     // ---------------------------------------------------------------------------
@@ -150,8 +225,10 @@ public class ChampionFlowTests(GodGamesApiFactory factory)
         Guid Id, Guid GodId, string Name, int Class,
         int STR, int DEX, int INT, int WIS, int VIT,
         int HP, int MaxHP, int Level, int XP,
-        string? PowerUpSlot, int Biome,
+        string? PowerUpSlot, int PowerUpTicksRemaining, int Biome,
         DateTimeOffset CreatedAt, DateTimeOffset LastTickAt);
+
+    private record LeaderboardEntryDto(int Rank, string Name, int Class, int Level, int XP, int Biome);
 
     private record InterventionDto(
         Guid Id, Guid GodId, Guid ChampionId,

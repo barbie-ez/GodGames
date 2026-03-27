@@ -31,14 +31,38 @@ public class WorldTickJob(
         {
             try
             {
-                // 1. Fetch pending intervention and parse effect
+                // 1. Fetch pending intervention, or carry over active power-up
                 StatEffect? statEffect = null;
                 var intervention = await interventions.GetPendingByGodIdAsync(champion.GodId);
                 if (intervention is not null)
                 {
-                    statEffect = parser.Parse(intervention.RawCommand);
-                    logger.LogDebug("Champion {ChampionId} has intervention: {Command}",
-                        champion.Id, intervention.RawCommand);
+                    var parsed = parser.Parse(intervention.RawCommand);
+                    statEffect = parsed;
+                    if (parsed.DurationTicks > 0)
+                    {
+                        // Store as active power-up; already applying this tick so -1
+                        champion.PowerUpSlot = intervention.RawCommand;
+                        champion.PowerUpTicksRemaining = parsed.DurationTicks - 1;
+                    }
+                    else
+                    {
+                        // One-shot (e.g. heal, divine shield) — clear any existing power-up
+                        champion.PowerUpSlot = null;
+                        champion.PowerUpTicksRemaining = 0;
+                    }
+                    logger.LogDebug("Champion {ChampionId} new intervention: {Command} (duration {D})",
+                        champion.Id, intervention.RawCommand, parsed.DurationTicks);
+                    await interventions.MarkAppliedAsync(intervention.Id);
+                }
+                else if (champion.PowerUpSlot is not null && champion.PowerUpTicksRemaining > 0)
+                {
+                    // Carry over active power-up (stat boosts only — HP bonuses are one-shot)
+                    statEffect = parser.Parse(champion.PowerUpSlot) with { HP = 0 };
+                    champion.PowerUpTicksRemaining--;
+                    if (champion.PowerUpTicksRemaining == 0)
+                        champion.PowerUpSlot = null;
+                    logger.LogDebug("Champion {ChampionId} power-up carry-over: {Slot} ({R} ticks left after this)",
+                        champion.Id, champion.PowerUpSlot ?? "(expired)", champion.PowerUpTicksRemaining);
                 }
 
                 // 2. Select a random world event matching champion's biome
@@ -56,14 +80,10 @@ public class WorldTickJob(
                 // 4. Persist champion state
                 await champions.UpdateAsync(champion);
 
-                // 5. Mark intervention applied
-                if (intervention is not null)
-                    await interventions.MarkAppliedAsync(intervention.Id);
-
-                // 6. Publish TickResolved — triggers NarrativeService
+                // 5. Publish TickResolved — triggers NarrativeService
                 await mediator.Publish(new TickResolved(champion, worldEvent, outcome, tickNumber));
 
-                // 7. Push ChampionUpdated to connected dashboard via Redis → SignalR
+                // 6. Push ChampionUpdated to connected dashboard via Redis → SignalR
                 var dto = CreateChampionDto(champion);
                 await tickNotifier.NotifyChampionUpdatedAsync(champion.GodId, dto);
 
@@ -84,6 +104,6 @@ public class WorldTickJob(
     private static ChampionDto CreateChampionDto(Domain.Entities.Champion c) => new(
         c.Id, c.GodId, c.Name, c.Class,
         c.Stats.STR, c.Stats.DEX, c.Stats.INT, c.Stats.WIS, c.Stats.VIT,
-        c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.Biome,
+        c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.PowerUpTicksRemaining, c.Biome,
         c.CreatedAt, c.LastTickAt);
 }

@@ -58,12 +58,21 @@ public class GodGamesApiClient(HttpClient http, GodAuthStateProvider authState)
     }
 
     // Narratives
-    public async Task<List<NarrativeEntryDto>> GetNarrativesAsync()
+    public async Task<List<NarrativeEntryDto>> GetNarrativesAsync(int count = 10)
     {
-        var request = await BuildRequest(HttpMethod.Get, "api/champions/me/narratives");
+        var request = await BuildRequest(HttpMethod.Get, $"api/champions/me/narratives?count={count}");
         var response = await http.SendAsync(request);
         return response.IsSuccessStatusCode
             ? await response.Content.ReadFromJsonAsync<List<NarrativeEntryDto>>() ?? []
+            : [];
+    }
+
+    // Leaderboard (no auth required)
+    public async Task<List<LeaderboardEntryDto>> GetLeaderboardAsync()
+    {
+        var response = await http.GetAsync("api/champions/leaderboard");
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<List<LeaderboardEntryDto>>() ?? []
             : [];
     }
 

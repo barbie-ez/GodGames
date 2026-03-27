@@ -15,6 +15,7 @@ public class Champion
     public int Level { get; set; } = 1;
     public int XP { get; set; }
     public string? PowerUpSlot { get; set; }
+    public int PowerUpTicksRemaining { get; set; }
     public Biome Biome { get; set; } = Biome.Safe;
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset LastTickAt { get; set; }

@@ -50,7 +50,14 @@ else if (_champion is not null)
                         <div class="col"><div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div></div>
                         <div class="col"><div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div></div>
                     </div>
-                    <div class="mt-3 text-muted small">
+                    @if (_champion.PowerUpSlot is not null)
+                    {
+                        <div class="mt-3">
+                            <span class="badge bg-warning text-dark me-1">&#9889; @_champion.PowerUpSlot</span>
+                            <span class="badge bg-secondary">@_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") left</span>
+                        </div>
+                    }
+                    <div class="mt-2 text-muted small">
                         Biome: <strong>@_champion.Biome</strong> &nbsp;|&nbsp;
                         Last tick: <strong>@_champion.LastTickAt.ToLocalTime().ToString("g")</strong>
                     </div>

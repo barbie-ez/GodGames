@@ -1,0 +1,82 @@
+@page "/leaderboard"
+@inject GodGamesApiClient Api
+
+<PageTitle>Leaderboard — God Games</PageTitle>
+
+<h4 class="mb-4">Champion Leaderboard</h4>
+
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Loading rankings…</p>
+    </div>
+}
+else if (_entries.Count == 0)
+{
+    <div class="alert alert-secondary">No champions have entered the world yet.</div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Name</th>
+                        <th>Class</th>
+                        <th>Level</th>
+                        <th>XP</th>
+                        <th>Biome</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var entry in _entries)
+                    {
+                        <tr class="@(entry.Rank <= 3 ? "table-warning fw-semibold" : "")">
+                            <td class="ps-3">
+                                @if (entry.Rank == 1) { <span>🥇</span> }
+                                else if (entry.Rank == 2) { <span>🥈</span> }
+                                else if (entry.Rank == 3) { <span>🥉</span> }
+                                else { <span class="text-muted">@entry.Rank</span> }
+                            </td>
+                            <td>@entry.Name</td>
+                            <td><span class="badge @ClassBadge(entry.Class)">@entry.Class</span></td>
+                            <td>@entry.Level</td>
+                            <td>@entry.XP</td>
+                            <td><span class="badge @BiomeBadge(entry.Biome)">@entry.Biome</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private List<LeaderboardEntryDto> _entries = [];
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _entries = await Api.GetLeaderboardAsync();
+        _loading = false;
+    }
+
+    private static string ClassBadge(ChampionClass c) => c switch
+    {
+        ChampionClass.Warrior => "bg-danger",
+        ChampionClass.Mage    => "bg-primary",
+        ChampionClass.Rogue   => "bg-dark",
+        _                     => "bg-secondary"
+    };
+
+    private static string BiomeBadge(Biome b) => b switch
+    {
+        Biome.Safe      => "bg-success",
+        Biome.Normal    => "bg-warning text-dark",
+        Biome.Dangerous => "bg-danger",
+        _               => "bg-secondary"
+    };
+}

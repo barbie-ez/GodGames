@@ -40,6 +40,6 @@ public class CreateChampionHandler(IChampionRepository repo) : IRequestHandler<C
     internal static ChampionDto ToDto(Champion c) => new(
         c.Id, c.GodId, c.Name, c.Class,
         c.Stats.STR, c.Stats.DEX, c.Stats.INT, c.Stats.WIS, c.Stats.VIT,
-        c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.Biome,
+        c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.PowerUpTicksRemaining, c.Biome,
         c.CreatedAt, c.LastTickAt);
 }

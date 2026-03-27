@@ -1,0 +1,146 @@
+@page "/champion/history"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+@inject NavigationManager Nav
+
+<PageTitle>Chronicle — God Games</PageTitle>
+
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Loading chronicles…</p>
+    </div>
+}
+else if (_champion is null)
+{
+    <p class="text-muted">No champion found.</p>
+}
+else
+{
+    <div class="mb-4 d-flex align-items-center gap-3">
+        <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Dashboard</a>
+        <h4 class="mb-0">@_champion.Name — Full Chronicle</h4>
+    </div>
+
+    <!-- Lifetime stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">Level</div>
+                    <div class="fs-4 fw-bold">@_champion.Level</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">XP</div>
+                    <div class="fs-4 fw-bold">@_champion.XP</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">Biome</div>
+                    <div class="fs-5 fw-bold">@_champion.Biome</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">Class</div>
+                    <div class="fs-5 fw-bold">@_champion.Class</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">HP</div>
+                    <div class="fs-5 fw-bold">@_champion.HP / @_champion.MaxHP</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2">
+            <div class="card text-center shadow-sm">
+                <div class="card-body py-2">
+                    <div class="small text-muted">Ticks</div>
+                    <div class="fs-4 fw-bold">@_narratives.Count</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (_champion.PowerUpSlot is not null)
+    {
+        <div class="alert alert-warning d-flex align-items-center gap-2 mb-4">
+            <span class="fs-5">&#9889;</span>
+            <span>Active power-up: <strong>@_champion.PowerUpSlot</strong> &mdash; @_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") remaining</span>
+        </div>
+    }
+
+    <!-- Stat grid -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header fw-bold">Stats</div>
+        <div class="card-body">
+            <div class="row text-center g-2">
+                <div class="col"><div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div></div>
+                <div class="col"><div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div></div>
+                <div class="col"><div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div></div>
+                <div class="col"><div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div></div>
+                <div class="col"><div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full chronicle -->
+    <div class="card shadow-sm">
+        <div class="card-header fw-bold d-flex justify-content-between align-items-center">
+            <span>Full Chronicle</span>
+            <span class="badge bg-secondary">@_narratives.Count entries</span>
+        </div>
+        <div class="card-body p-0">
+            @if (_narratives.Count == 0)
+            {
+                <p class="text-muted p-3 mb-0">No entries yet. The first tick will begin your champion's story.</p>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var entry in _narratives)
+                    {
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="badge bg-light text-dark border">Tick @entry.TickNumber</span>
+                                <span class="text-muted small">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
+                            </div>
+                            <p class="mb-0">@entry.StoryText</p>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private ChampionDto? _champion;
+    private List<NarrativeEntryDto> _narratives = [];
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _champion = await Api.GetMyChampionAsync();
+        if (_champion is null)
+        {
+            Nav.NavigateTo("/champion/create");
+            return;
+        }
+        _narratives = await Api.GetNarrativesAsync(count: 50);
+        _loading = false;
+    }
+}

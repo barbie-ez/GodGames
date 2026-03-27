@@ -17,6 +17,7 @@ public record ChampionDto(
     int Level,
     int XP,
     string? PowerUpSlot,
+    int PowerUpTicksRemaining,
     Biome Biome,
     DateTimeOffset CreatedAt,
     DateTimeOffset LastTickAt);
