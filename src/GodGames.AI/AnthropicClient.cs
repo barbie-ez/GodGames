@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GodGames.AI;
 
@@ -12,15 +11,14 @@ public interface IAnthropicClient
 
 public class AnthropicClient(
     HttpClient httpClient,
-    IConfiguration configuration,
-    ILogger<AnthropicClient> logger) : IAnthropicClient
+    IOptions<AnthropicOptions> options) : IAnthropicClient
 {
     private static readonly string SystemPrompt =
         "You are a narrator for a fantasy idle RPG. Write exactly 2 vivid sentences describing what happened to the champion. Be concise and dramatic.";
 
     public async Task<string> CompleteAsync(string userMessage, int maxTokens, CancellationToken ct = default)
     {
-        var model = configuration["Anthropic:Model"] ?? "claude-sonnet-4-20250514";
+        var model = options.Value.Model;
 
         var requestBody = new
         {

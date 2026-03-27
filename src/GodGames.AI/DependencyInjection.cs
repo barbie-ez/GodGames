@@ -7,12 +7,13 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAI(this IServiceCollection services, IConfiguration configuration)
     {
-        var apiKey = configuration["Anthropic:ApiKey"] ?? string.Empty;
+        services.Configure<AnthropicOptions>(configuration.GetSection(AnthropicOptions.SectionName));
 
-        services.AddHttpClient<IAnthropicClient, AnthropicClient>(client =>
+        services.AddHttpClient<IAnthropicClient, AnthropicClient>((sp, client) =>
         {
+            var opts = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AnthropicOptions>>().Value;
             client.BaseAddress = new Uri("https://api.anthropic.com/v1/");
-            client.DefaultRequestHeaders.Add("x-api-key", apiKey);
+            client.DefaultRequestHeaders.Add("x-api-key", opts.ApiKey);
             client.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
         });
 
