@@ -4,7 +4,7 @@ using GodGames.Application.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace GodGames.Worker.Jobs;
+namespace GodGames.Application.Jobs;
 
 public class WorldTickJob(
     IChampionRepository champions,
@@ -81,7 +81,7 @@ public class WorldTickJob(
         logger.LogInformation("World tick {TickNumber} completed", tickNumber);
     }
 
-    private static ChampionDto CreateChampionDto(GodGames.Domain.Entities.Champion c) => new(
+    private static ChampionDto CreateChampionDto(Domain.Entities.Champion c) => new(
         c.Id, c.GodId, c.Name, c.Class,
         c.Stats.STR, c.Stats.DEX, c.Stats.INT, c.Stats.WIS, c.Stats.VIT,
         c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.Biome,

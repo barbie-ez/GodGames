@@ -27,8 +27,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 builder.Services.AddAI(builder.Configuration);
-builder.Services.AddHangfireServer();
-
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
@@ -67,6 +65,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddHostedService<ChampionUpdateListener>();
+builder.Services.AddScoped<GodGames.Application.Jobs.WorldTickJob>();
+
+// Note: AddHangfireServer is intentionally NOT called here.
+// The Worker process is the sole Hangfire job processor.
+// The API only uses the dashboard + IBackgroundJobClient/IRecurringJobManager.
 
 var app = builder.Build();
 

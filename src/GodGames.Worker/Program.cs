@@ -2,7 +2,7 @@ using GodGames.AI;
 using GodGames.Application;
 using GodGames.Infrastructure;
 using GodGames.Worker;
-using GodGames.Worker.Jobs;
+using GodGames.Application.Jobs;
 using Hangfire;
 using Serilog;
 

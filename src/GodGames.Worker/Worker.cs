@@ -1,4 +1,4 @@
-using GodGames.Worker.Jobs;
+using GodGames.Application.Jobs;
 using Hangfire;
 
 namespace GodGames.Worker;
