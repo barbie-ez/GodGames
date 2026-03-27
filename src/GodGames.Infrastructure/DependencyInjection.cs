@@ -1,5 +1,6 @@
 using GodGames.Application.Interfaces;
 using GodGames.Infrastructure.Identity;
+using GodGames.Infrastructure.Notifications;
 using GodGames.Infrastructure.Persistence;
 using GodGames.Infrastructure.Repositories;
 using Hangfire;
@@ -48,6 +49,8 @@ public static class DependencyInjection
         var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
         services.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(redisConnection));
+
+        services.AddSingleton<ITickNotifier, RedisTickNotifier>();
 
         return services;
     }

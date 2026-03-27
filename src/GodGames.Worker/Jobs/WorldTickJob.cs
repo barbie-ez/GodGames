@@ -13,6 +13,7 @@ public class WorldTickJob(
     IGameEngineService engine,
     IInterventionParser parser,
     IMediator mediator,
+    ITickNotifier tickNotifier,
     ILogger<WorldTickJob> logger)
 {
     private static int _tickNumber;
@@ -62,6 +63,10 @@ public class WorldTickJob(
                 // 6. Publish TickResolved — triggers NarrativeService
                 await mediator.Publish(new TickResolved(champion, worldEvent, outcome, tickNumber));
 
+                // 7. Push ChampionUpdated to connected dashboard via Redis → SignalR
+                var dto = CreateChampionDto(champion);
+                await tickNotifier.NotifyChampionUpdatedAsync(champion.GodId, dto);
+
                 logger.LogInformation(
                     "Tick {TickNumber}: champion {Name} completed {EventName} — {XP} XP gained, HP {HP}/{MaxHP}{LevelUp}",
                     tickNumber, champion.Name, worldEvent.Name, outcome.XpGained,
@@ -75,4 +80,10 @@ public class WorldTickJob(
 
         logger.LogInformation("World tick {TickNumber} completed", tickNumber);
     }
+
+    private static ChampionDto CreateChampionDto(GodGames.Domain.Entities.Champion c) => new(
+        c.Id, c.GodId, c.Name, c.Class,
+        c.Stats.STR, c.Stats.DEX, c.Stats.INT, c.Stats.WIS, c.Stats.VIT,
+        c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.Biome,
+        c.CreatedAt, c.LastTickAt);
 }

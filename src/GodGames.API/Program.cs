@@ -3,6 +3,7 @@ using GodGames.AI;
 using GodGames.Application;
 using GodGames.Infrastructure;
 using GodGames.API.Hubs;
+using GodGames.API.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -57,6 +58,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddHostedService<ChampionUpdateListener>();
 
 var app = builder.Build();
 
