@@ -12,7 +12,8 @@ public static class DependencyInjection
             cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
 
         services.AddSingleton<IGameEngineService, GameEngineService>();
-        services.AddSingleton<IInterventionParser, InterventionParser>();
+        services.AddSingleton<InterventionParser>();
+        services.AddSingleton<IInterventionParser>(sp => sp.GetRequiredService<InterventionParser>());
 
         return services;
     }

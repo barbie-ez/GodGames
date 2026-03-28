@@ -19,4 +19,10 @@ public class NarrativeRepository(GodGamesDbContext db) : INarrativeRepository
             .OrderByDescending(n => n.TickNumber)
             .Take(count)
             .ToListAsync(ct);
+
+    public async Task<int> GetMaxTickNumberAsync(CancellationToken ct = default)
+    {
+        if (!await db.NarrativeEntries.AnyAsync(ct)) return 0;
+        return await db.NarrativeEntries.MaxAsync(n => n.TickNumber, ct);
+    }
 }

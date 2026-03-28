@@ -1,0 +1,192 @@
+@page "/world-map"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+
+<PageTitle>World Map — God Games</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">World Map</h4>
+    @if (_champion is not null)
+    {
+        <span class="text-muted small">Your champion is in <strong>@CurrentRegionName</strong></span>
+    }
+</div>
+
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center">
+        <div style="max-width:420px;width:100%">
+            <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg"
+                 style="width:100%;border:1px solid #333;border-radius:8px;background:#1a1a2e">
+
+                <!-- Static zone labels and dividers -->
+                @((MarkupString)@"
+                <text x='200' y='22' text-anchor='middle' fill='#ff6b6b' font-size='13' font-weight='bold' font-family='sans-serif'>DANGEROUS</text>
+                <text x='200' y='222' text-anchor='middle' fill='#ffd93d' font-size='13' font-weight='bold' font-family='sans-serif'>NORMAL</text>
+                <text x='200' y='422' text-anchor='middle' fill='#6bcb77' font-size='13' font-weight='bold' font-family='sans-serif'>SAFE</text>
+                <line x1='20' y1='210' x2='380' y2='210' stroke='#444' stroke-width='1' stroke-dasharray='6,4'/>
+                <line x1='20' y1='400' x2='380' y2='400' stroke='#444' stroke-width='1' stroke-dasharray='6,4'/>
+                ")
+
+                @foreach (var region in _regions)
+                {
+                    var explored = IsExplored(region.Id);
+                    var isCurrent = region.Id == (_champion?.CurrentRegionId ?? "");
+                    var fillColor = RegionFill(region.Biome, explored);
+                    var strokeColor = isCurrent ? "#fff" : "#555";
+                    var strokeWidth = isCurrent ? "2.5" : "1";
+                    var opacity = explored ? "1" : "0.4";
+
+                    <g @onclick="() => SelectRegion(region)" style="cursor:pointer">
+                        <circle cx="@region.MapX" cy="@region.MapY" r="30"
+                                fill="@fillColor"
+                                stroke="@strokeColor"
+                                stroke-width="@strokeWidth"
+                                opacity="@opacity"/>
+
+                        @if (!explored)
+                        {
+                            <circle cx="@region.MapX" cy="@region.MapY" r="30"
+                                    fill="#000" opacity="0.5"/>
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#888' font-size='18' font-family='sans-serif'>?</text>")
+                        }
+                        else
+                        {
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY - 35}' text-anchor='middle' fill='#ddd' font-size='9' font-family='sans-serif' style='pointer-events:none'>{System.Net.WebUtility.HtmlEncode(region.Name)}</text>")
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#fff' font-size='11' font-family='sans-serif' style='pointer-events:none'>{DifficultyPips(region.DifficultyRating)}</text>")
+                        }
+
+                        @if (isCurrent)
+                        {
+                            <circle cx="@region.MapX" cy="@region.MapY" r="38"
+                                    fill="none" stroke="#fff" stroke-width="1.5"
+                                    class="champion-pulse"/>
+                        }
+                    </g>
+                }
+            </svg>
+        </div>
+    </div>
+
+    <!-- Region info panel -->
+    @if (_selected is not null)
+    {
+        <div class="card mt-3 shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="fw-bold">@_selected.Name</span>
+                <span class="badge @BiomeBadge(_selected.Biome)">@_selected.Biome</span>
+            </div>
+            <div class="card-body">
+                <p class="mb-2 text-muted">@_selected.Description</p>
+                <div class="row g-2 small">
+                    <div class="col-6">
+                        <span class="text-muted">Difficulty:</span>
+                        <strong>@_selected.DifficultyRating / 10</strong>
+                    </div>
+                    <div class="col-6">
+                        <span class="text-muted">Min level:</span>
+                        <strong>@_selected.MinLevelRequired</strong>
+                    </div>
+                    <div class="col-12">
+                        <span class="text-muted">Events:</span>
+                        <strong>@_selected.ActiveEventTypes</strong>
+                    </div>
+                </div>
+                @if (_champion is not null && _selected.Id != _champion.CurrentRegionId)
+                {
+                    <div class="mt-2 text-muted small">
+                        Issue <code>move to @_selected.Name</code> as your intervention to travel here.
+                    </div>
+                }
+                else if (_selected.Id == _champion?.CurrentRegionId)
+                {
+                    <div class="mt-2">
+                        <span class="badge bg-light text-dark border">Your champion is here</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+
+<style>
+    .champion-pulse {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @@keyframes pulse {
+        0%   { opacity: 1; }
+        50%  { opacity: 0.3; }
+        100% { opacity: 1; }
+    }
+</style>
+
+@code {
+    private List<WorldRegionDto> _regions = [];
+    private ChampionDto? _champion;
+    private WorldRegionDto? _selected;
+    private bool _loading = true;
+    private HashSet<string> _exploredIds = [];
+
+    private string CurrentRegionName =>
+        _regions.FirstOrDefault(r => r.Id == _champion?.CurrentRegionId)?.Name
+        ?? _champion?.CurrentRegionId ?? "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var regionsTask = Api.GetWorldRegionsAsync();
+        var championTask = Api.GetMyChampionAsync();
+        await Task.WhenAll(regionsTask, championTask);
+        _regions = regionsTask.Result;
+        _champion = championTask.Result;
+
+        if (_champion is not null)
+        {
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<string>>(_champion.ExploredRegionIds);
+                _exploredIds = list is not null ? [.. list] : [_champion.CurrentRegionId];
+            }
+            catch
+            {
+                _exploredIds = [_champion.CurrentRegionId];
+            }
+        }
+
+        _loading = false;
+    }
+
+    private bool IsExplored(string regionId) =>
+        _exploredIds.Contains(regionId) || regionId == _champion?.CurrentRegionId;
+
+    private void SelectRegion(WorldRegionDto region) => _selected = region;
+
+    private static string RegionFill(string biome, bool explored)
+    {
+        if (!explored) return "#2a2a3e";
+        return biome switch
+        {
+            "Safe"      => "#2d6a4f",
+            "Normal"    => "#7b4f12",
+            "Dangerous" => "#7b1c1c",
+            _           => "#444"
+        };
+    }
+
+    private static string DifficultyPips(int rating) =>
+        string.Concat(Enumerable.Repeat("●", Math.Min(rating, 5))) +
+        string.Concat(Enumerable.Repeat("○", Math.Max(0, 5 - rating)));
+
+    private static string BiomeBadge(string biome) => biome switch
+    {
+        "Safe"      => "bg-success",
+        "Normal"    => "bg-warning text-dark",
+        "Dangerous" => "bg-danger",
+        _           => "bg-secondary"
+    };
+}

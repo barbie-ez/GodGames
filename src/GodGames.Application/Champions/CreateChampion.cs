@@ -7,7 +7,7 @@ using MediatR;
 
 namespace GodGames.Application.Champions;
 
-public record CreateChampionCommand(Guid GodId, string Name, ChampionClass Class) : IRequest<ChampionDto>;
+public record CreateChampionCommand(Guid GodId, string Name, ChampionClass Class, PersonalityTrait PersonalityTrait) : IRequest<ChampionDto>;
 
 public class CreateChampionHandler(IChampionRepository repo) : IRequestHandler<CreateChampionCommand, ChampionDto>
 {
@@ -23,12 +23,15 @@ public class CreateChampionHandler(IChampionRepository repo) : IRequestHandler<C
             GodId = request.GodId,
             Name = request.Name,
             Class = request.Class,
+            PersonalityTrait = request.PersonalityTrait,
             Stats = new Stats(10, 10, 10, 10, 10),
             HP = 100,
             MaxHP = 100,
             Level = 1,
             XP = 0,
             Biome = Biome.Safe,
+            CurrentRegionId = "whispering-fields",
+            ExploredRegionIds = "[\"whispering-fields\"]",
             CreatedAt = DateTimeOffset.UtcNow,
             LastTickAt = DateTimeOffset.UtcNow
         };
@@ -38,8 +41,9 @@ public class CreateChampionHandler(IChampionRepository repo) : IRequestHandler<C
     }
 
     internal static ChampionDto ToDto(Champion c) => new(
-        c.Id, c.GodId, c.Name, c.Class,
+        c.Id, c.GodId, c.Name, c.Class, c.PersonalityTrait,
         c.Stats.STR, c.Stats.DEX, c.Stats.INT, c.Stats.WIS, c.Stats.VIT,
         c.HP, c.MaxHP, c.Level, c.XP, c.PowerUpSlot, c.PowerUpTicksRemaining, c.Biome,
+        c.ActiveDebuff, c.ActiveDebuffTicksRemaining, c.CurrentRegionId, c.ExploredRegionIds,
         c.CreatedAt, c.LastTickAt);
 }

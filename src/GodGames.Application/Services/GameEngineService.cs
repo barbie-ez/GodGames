@@ -9,26 +9,69 @@ namespace GodGames.Application.Services;
 
 public class GameEngineService : IGameEngineService
 {
-    private static readonly Random Rng = new();
-
-    public TickOutcome ResolveEvent(Champion champion, WorldEvent worldEvent, StatEffect? interventionEffect)
+    // LuckRoll is seeded per champion per tick so each champion has independent luck.
+    public LuckOutcome LuckRoll(Guid championId, int tickNumber)
     {
+        var seed = HashCode.Combine(championId, tickNumber);
+        var rng = new Random(seed);
+        int roll = rng.Next(1, 101);
+
+        return roll switch
+        {
+            <= 5  => LuckOutcome.DivineFavour,
+            <= 25 => LuckOutcome.BlessedTick,
+            <= 75 => LuckOutcome.NormalTick,
+            <= 95 => LuckOutcome.GodLuckIsLow,
+            _     => LuckOutcome.CursedTick,
+        };
+    }
+
+    public TickOutcome ResolveEvent(Champion champion, WorldEvent worldEvent, StatEffect? interventionEffect, LuckOutcome luckOutcome)
+    {
+        var rng = new Random();
+
         // Apply intervention stat boosts temporarily for this tick
         var effectiveStats = ApplyEffect(champion.Stats, interventionEffect);
+
+        // Apply active debuff penalty to effective stats
+        effectiveStats = ApplyDebuff(effectiveStats, champion.ActiveDebuff);
 
         // Parse stat requirements from world event
         var requirements = ParseStatRequirements(worldEvent.StatRequirementsJson);
 
-        // Determine success based on effective stats vs requirements
+        // Determine success based on effective stats vs requirements, adjusted by personality
         bool meetsRequirements = MeetsRequirements(effectiveStats, requirements);
-        int successRoll = Rng.Next(1, 101);
+        int successThreshold = meetsRequirements ? 80 : 40;
+        successThreshold = ApplyPersonalitySuccessModifier(successThreshold, champion.PersonalityTrait, worldEvent);
 
-        // Success chance: 80% if meets requirements, 40% otherwise
-        bool success = meetsRequirements ? successRoll <= 80 : successRoll <= 40;
+        bool success = rng.Next(1, 101) <= successThreshold;
 
-        // Calculate outcomes
-        int xpGained = success ? Rng.Next(20, 51) : Rng.Next(5, 21);
-        int hpDelta = success ? Rng.Next(0, 16) : -Rng.Next(5, 21);
+        // Calculate base XP and HP outcomes
+        int baseXp = success ? rng.Next(20, 51) : rng.Next(5, 21);
+        int hpDelta = success ? rng.Next(0, 16) : -rng.Next(5, 21);
+
+        // Cautious trait: -5% damage taken on failure
+        if (!success && champion.PersonalityTrait == PersonalityTrait.Cautious)
+            hpDelta = (int)(hpDelta * 0.95);
+
+        // Reckless trait: higher variance — amplify both wins and losses
+        if (champion.PersonalityTrait == PersonalityTrait.Reckless)
+        {
+            baseXp = success ? rng.Next(25, 65) : rng.Next(3, 15);
+            hpDelta = success ? rng.Next(0, 22) : -rng.Next(8, 28);
+        }
+
+        // Apply luck multiplier to XP
+        double luckMultiplier = luckOutcome switch
+        {
+            LuckOutcome.DivineFavour  => 1.0 + rng.NextDouble() * 0.15 + 0.25, // +25 to +40%
+            LuckOutcome.BlessedTick   => 1.0 + rng.NextDouble() * 0.15 + 0.10, // +10 to +25%
+            LuckOutcome.NormalTick    => 1.0,
+            LuckOutcome.GodLuckIsLow  => 1.0 - (rng.NextDouble() * 0.10 + 0.10), // -10 to -20%
+            LuckOutcome.CursedTick    => 0.75, // flat -25% on cursed ticks
+            _                         => 1.0
+        };
+        int xpGained = Math.Max(1, (int)(baseXp * luckMultiplier));
 
         // Apply HP intervention bonus
         if (interventionEffect?.HP > 0)
@@ -43,6 +86,37 @@ public class GameEngineService : IGameEngineService
         champion.XP += xpGained;
         champion.LastTickAt = DateTimeOffset.UtcNow;
 
+        // Tick down active debuff
+        if (champion.ActiveDebuff != DebuffType.None)
+        {
+            champion.ActiveDebuffTicksRemaining--;
+            if (champion.ActiveDebuffTicksRemaining <= 0)
+                champion.ActiveDebuff = DebuffType.None;
+        }
+
+        // Apply new debuff from luck
+        if (luckOutcome is LuckOutcome.CursedTick or LuckOutcome.GodLuckIsLow)
+        {
+            var debuff = luckOutcome == LuckOutcome.CursedTick
+                ? PickCurseDebuff(rng)
+                : DebuffType.StatReduction;
+            champion.ActiveDebuff = debuff;
+            champion.ActiveDebuffTicksRemaining = luckOutcome == LuckOutcome.CursedTick ? 2 : 1;
+        }
+
+        // Track win/loss for patron title
+        if (success) champion.CombatWins++;
+        champion.TicksSurvivedStreak++;
+
+        // Track consecutive cursed ticks
+        if (luckOutcome == LuckOutcome.CursedTick)
+            champion.ConsecutiveCursedTicks++;
+        else
+            champion.ConsecutiveCursedTicks = 0;
+
+        if (luckOutcome == LuckOutcome.DivineFavour)
+            champion.DivineFavourCount++;
+
         // Level up check: XP threshold = Level * 100
         bool leveledUp = false;
         while (champion.XP >= champion.Level * 100)
@@ -52,7 +126,6 @@ public class GameEngineService : IGameEngineService
             champion.MaxHP += 10;
             champion.HP = Math.Min(champion.HP + 10, champion.MaxHP);
 
-            // Increase base stats on level up
             champion.Stats = champion.Stats with
             {
                 STR = champion.Stats.STR + 1,
@@ -62,7 +135,6 @@ public class GameEngineService : IGameEngineService
                 VIT = champion.Stats.VIT + 1
             };
 
-            // Advance biome based on new level
             champion.Biome = champion.Level switch
             {
                 >= 10 => Biome.Dangerous,
@@ -77,8 +149,41 @@ public class GameEngineService : IGameEngineService
             ? $"succeeded in the {worldEvent.Name} encounter, gaining {xpGained} XP"
             : $"struggled through {worldEvent.Name}, taking {-hpDelta} damage but earning {xpGained} XP";
 
-        return new TickOutcome(champion.Id, xpGained, hpDelta, worldEvent.Name, description, leveledUp);
+        if (luckOutcome == LuckOutcome.DivineFavour)
+            description = $"[Divine Favour] {description}";
+        else if (luckOutcome == LuckOutcome.CursedTick)
+            description = $"[Cursed] {description}";
+
+        return new TickOutcome(champion.Id, xpGained, hpDelta, worldEvent.Name, description, luckOutcome, leveledUp);
     }
+
+    private static int ApplyPersonalitySuccessModifier(int baseThreshold, PersonalityTrait trait, WorldEvent worldEvent)
+    {
+        // Brave: +5% combat outcome bonus
+        if (trait == PersonalityTrait.Brave)
+            return baseThreshold + 5;
+
+        // Cautious: slight defensive bonus (treated as better success in exploration)
+        if (trait == PersonalityTrait.Cautious && worldEvent.Biome == Biome.Safe)
+            return baseThreshold + 5;
+
+        return baseThreshold;
+    }
+
+    private static Stats ApplyDebuff(Stats stats, DebuffType debuff) => debuff switch
+    {
+        DebuffType.StatReduction  => stats with { STR = stats.STR - 5, DEX = stats.DEX - 5 },
+        DebuffType.WeakenedStrike => stats with { STR = (int)(stats.STR * 0.9), DEX = (int)(stats.DEX * 0.9) },
+        DebuffType.CursedBlood    => stats with { VIT = (int)(stats.VIT * 0.9), WIS = (int)(stats.WIS * 0.9) },
+        _                         => stats
+    };
+
+    private static DebuffType PickCurseDebuff(Random rng) => rng.Next(3) switch
+    {
+        0 => DebuffType.StatReduction,
+        1 => DebuffType.WeakenedStrike,
+        _ => DebuffType.CursedBlood,
+    };
 
     private static Stats ApplyEffect(Stats stats, StatEffect? effect)
     {

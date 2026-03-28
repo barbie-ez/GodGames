@@ -1,3 +1,5 @@
+using GodGames.Domain.Enums;
+
 namespace GodGames.Application.Models;
 
 public record TickOutcome(
@@ -6,4 +8,5 @@ public record TickOutcome(
     int HpDelta,
     string EventName,
     string OutcomeDescription,
+    LuckOutcome LuckOutcome = LuckOutcome.NormalTick,
     bool LeveledUp = false);

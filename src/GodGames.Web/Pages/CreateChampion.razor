@@ -20,12 +20,21 @@
                 <label class="form-label">Champion Name</label>
                 <InputText @bind-Value="_model.Name" class="form-control" placeholder="e.g. Aldric the Bold" />
             </div>
-            <div class="mb-4">
+            <div class="mb-3">
                 <label class="form-label">Class</label>
                 <InputSelect @bind-Value="_model.Class" class="form-select">
-                    <option value="@ChampionClass.Warrior">⚔️ Warrior</option>
-                    <option value="@ChampionClass.Mage">🔮 Mage</option>
-                    <option value="@ChampionClass.Rogue">🗡️ Rogue</option>
+                    <option value="@ChampionClass.Warrior">&#9876; Warrior</option>
+                    <option value="@ChampionClass.Mage">&#128302; Mage</option>
+                    <option value="@ChampionClass.Rogue">&#128505; Rogue</option>
+                </InputSelect>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Personality Trait</label>
+                <InputSelect @bind-Value="_model.PersonalityTrait" class="form-select">
+                    <option value="@PersonalityTrait.Brave">Brave — +10% combat events, +5% combat bonus</option>
+                    <option value="@PersonalityTrait.Cautious">Cautious — +10% safe events, -5% damage taken</option>
+                    <option value="@PersonalityTrait.Reckless">Reckless — +20% combat, higher variance wins/losses</option>
+                    <option value="@PersonalityTrait.Cunning">Cunning — +15% loot events, better intervention effects</option>
                 </InputSelect>
             </div>
             <button type="submit" class="btn btn-primary w-100" disabled="@_loading">
@@ -44,7 +53,8 @@
     {
         _loading = true;
         _error = null;
-        var champion = await Api.CreateChampionAsync(new CreateChampionRequest(_model.Name, _model.Class));
+        var champion = await Api.CreateChampionAsync(
+            new CreateChampionRequest(_model.Name, _model.Class, _model.PersonalityTrait));
         _loading = false;
 
         if (champion is not null) Nav.NavigateTo("/");
@@ -55,5 +65,6 @@
     {
         public string Name { get; set; } = "";
         public ChampionClass Class { get; set; } = ChampionClass.Warrior;
+        public PersonalityTrait PersonalityTrait { get; set; } = PersonalityTrait.Brave;
     }
 }

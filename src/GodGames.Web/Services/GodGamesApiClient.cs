@@ -21,11 +21,17 @@ public class GodGamesApiClient(HttpClient http, GodAuthStateProvider authState)
         var response = await http.PostAsJsonAsync("api/auth/register", request);
         if (response.IsSuccessStatusCode) return null;
 
-        // Identity returns an array of error description strings
-        var errors = await response.Content.ReadFromJsonAsync<string[]>();
-        return errors is { Length: > 0 }
-            ? string.Join(" ", errors)
-            : $"Registration failed ({(int)response.StatusCode}).";
+        try
+        {
+            var errors = await response.Content.ReadFromJsonAsync<string[]>();
+            return errors is { Length: > 0 }
+                ? string.Join(" ", errors)
+                : $"Registration failed ({(int)response.StatusCode}).";
+        }
+        catch
+        {
+            return $"Registration failed ({(int)response.StatusCode}). Check the API is running and migrations are applied.";
+        }
     }
 
     // Champion
@@ -73,6 +79,15 @@ public class GodGamesApiClient(HttpClient http, GodAuthStateProvider authState)
         var response = await http.GetAsync("api/champions/leaderboard");
         return response.IsSuccessStatusCode
             ? await response.Content.ReadFromJsonAsync<List<LeaderboardEntryDto>>() ?? []
+            : [];
+    }
+
+    // World map regions (no auth required)
+    public async Task<List<WorldRegionDto>> GetWorldRegionsAsync()
+    {
+        var response = await http.GetAsync("api/regions");
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<List<WorldRegionDto>>() ?? []
             : [];
     }
 

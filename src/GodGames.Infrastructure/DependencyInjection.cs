@@ -36,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<IInterventionRepository, InterventionRepository>();
         services.AddScoped<INarrativeRepository, NarrativeRepository>();
         services.AddScoped<IWorldEventRepository, WorldEventRepository>();
+        services.AddScoped<IWorldRegionRepository, WorldRegionRepository>();
+        services.AddScoped<IGodRepository, GodRepository>();
 
         // Hangfire (PostgreSQL storage)
         services.AddHangfire(cfg => cfg

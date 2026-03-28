@@ -222,13 +222,15 @@ public class ChampionFlowTests(GodGamesApiFactory factory)
     // ---------------------------------------------------------------------------
 
     private record ChampionDto(
-        Guid Id, Guid GodId, string Name, int Class,
+        Guid Id, Guid GodId, string Name, int Class, int PersonalityTrait,
         int STR, int DEX, int INT, int WIS, int VIT,
         int HP, int MaxHP, int Level, int XP,
         string? PowerUpSlot, int PowerUpTicksRemaining, int Biome,
+        int ActiveDebuff, int ActiveDebuffTicksRemaining,
+        string CurrentRegionId, string ExploredRegionIds,
         DateTimeOffset CreatedAt, DateTimeOffset LastTickAt);
 
-    private record LeaderboardEntryDto(int Rank, string Name, int Class, int Level, int XP, int Biome);
+    private record LeaderboardEntryDto(int Rank, string Name, int Class, int PersonalityTrait, int Level, int XP, int Biome, int PatronTitle);
 
     private record InterventionDto(
         Guid Id, Guid GodId, Guid ChampionId,

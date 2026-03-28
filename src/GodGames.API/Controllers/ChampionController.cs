@@ -12,13 +12,18 @@ namespace GodGames.API.Controllers;
 [ApiController]
 [Route("api/champions")]
 [Authorize]
-public class ChampionController(IMediator mediator, INarrativeRepository narratives, IChampionRepository champions) : ControllerBase
+public class ChampionController(
+    IMediator mediator,
+    INarrativeRepository narratives,
+    IChampionRepository champions,
+    IGodRepository gods) : ControllerBase
 {
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateChampionRequest request, CancellationToken ct)
     {
         var godId = GetGodId();
-        var champion = await mediator.Send(new CreateChampionCommand(godId, request.Name, request.Class), ct);
+        var champion = await mediator.Send(
+            new CreateChampionCommand(godId, request.Name, request.Class, request.PersonalityTrait), ct);
         return CreatedAtAction(nameof(GetMine), champion);
     }
 
@@ -48,17 +53,14 @@ public class ChampionController(IMediator mediator, INarrativeRepository narrati
     public async Task<IActionResult> GetLeaderboard(CancellationToken ct)
     {
         var all = await champions.GetAllActiveAsync(ct);
-        var ranked = all
-            .OrderByDescending(c => c.Level)
-            .ThenByDescending(c => c.XP)
-            .Select((c, i) => new LeaderboardEntryDto(
-                Rank: i + 1,
-                Name: c.Name,
-                Class: c.Class,
-                Level: c.Level,
-                XP: c.XP,
-                Biome: c.Biome))
-            .ToList();
+        var ranked = new List<LeaderboardEntryDto>();
+        int rank = 0;
+        foreach (var c in all.OrderByDescending(c => c.Level).ThenByDescending(c => c.XP))
+        {
+            rank++;
+            var patronTitle = await gods.GetPatronTitleAsync(c.GodId, ct);
+            ranked.Add(new LeaderboardEntryDto(rank, c.Name, c.Class, c.PersonalityTrait, c.Level, c.XP, c.Biome, patronTitle));
+        }
         return Ok(ranked);
     }
 
@@ -66,5 +68,17 @@ public class ChampionController(IMediator mediator, INarrativeRepository narrati
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 }
 
-public record CreateChampionRequest(string Name, ChampionClass Class);
-public record LeaderboardEntryDto(int Rank, string Name, ChampionClass Class, int Level, int XP, GodGames.Domain.Enums.Biome Biome);
+public record CreateChampionRequest(
+    string Name,
+    ChampionClass Class,
+    PersonalityTrait PersonalityTrait = PersonalityTrait.Brave);
+
+public record LeaderboardEntryDto(
+    int Rank,
+    string Name,
+    ChampionClass Class,
+    PersonalityTrait PersonalityTrait,
+    int Level,
+    int XP,
+    Biome Biome,
+    PatronTitle PatronTitle);

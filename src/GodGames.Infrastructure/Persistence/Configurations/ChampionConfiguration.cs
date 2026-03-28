@@ -20,6 +20,20 @@ public class ChampionConfiguration : IEntityTypeConfiguration<Champion>
         builder.Property(c => c.Biome)
             .HasConversion<string>();
 
+        builder.Property(c => c.PersonalityTrait)
+            .HasConversion<string>();
+
+        builder.Property(c => c.ActiveDebuff)
+            .HasConversion<string>();
+
+        builder.Property(c => c.CurrentRegionId)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(c => c.ExploredRegionIds)
+            .IsRequired()
+            .HasColumnType("text");
+
         builder.OwnsOne(c => c.Stats, stats =>
         {
             stats.Property(s => s.STR).HasColumnName("stat_str");

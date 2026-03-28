@@ -3,6 +3,7 @@ using System;
 using GodGames.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GodGames.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GodGamesDbContext))]
-    partial class GodGamesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260327201900_Sprint6_LuckPersonalityWorldMap")]
+    partial class Sprint6_LuckPersonalityWorldMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

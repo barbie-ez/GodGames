@@ -7,4 +7,5 @@ public record StatEffect(
     int WIS = 0,
     int VIT = 0,
     int HP = 0,
-    int DurationTicks = 0);
+    int DurationTicks = 0,
+    string? MoveToRegionId = null);

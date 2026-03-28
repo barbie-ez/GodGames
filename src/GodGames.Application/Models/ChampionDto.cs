@@ -7,6 +7,7 @@ public record ChampionDto(
     Guid GodId,
     string Name,
     ChampionClass Class,
+    PersonalityTrait PersonalityTrait,
     int STR,
     int DEX,
     int INT,
@@ -19,5 +20,9 @@ public record ChampionDto(
     string? PowerUpSlot,
     int PowerUpTicksRemaining,
     Biome Biome,
+    DebuffType ActiveDebuff,
+    int ActiveDebuffTicksRemaining,
+    string CurrentRegionId,
+    string ExploredRegionIds,
     DateTimeOffset CreatedAt,
     DateTimeOffset LastTickAt);
