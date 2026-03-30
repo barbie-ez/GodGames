@@ -7,125 +7,102 @@
 
 @if (_loading)
 {
-    <div class="text-center mt-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-2 text-muted">Loading chronicles…</p>
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Loading chronicles…</span>
     </div>
 }
 else if (_champion is null)
 {
-    <p class="text-muted">No champion found.</p>
+    <p class="gg-empty-state">No champion found.</p>
 }
 else
 {
-    <div class="mb-4 d-flex align-items-center gap-3">
-        <a href="/" class="btn btn-outline-secondary btn-sm">&larr; Dashboard</a>
-        <h4 class="mb-0">@_champion.Name — Full Chronicle</h4>
-    </div>
+    <!-- Page heading -->
+    <h1 class="gg-page-title">@_champion.Name</h1>
+    <div class="gg-page-title-rule"></div>
 
-    <!-- Lifetime stats -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">Level</div>
-                    <div class="fs-4 fw-bold">@_champion.Level</div>
-                </div>
-            </div>
+    <!-- Stat strip -->
+    <div class="gg-stat-strip">
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Level</span>
+            <span class="gg-stat-strip-val">@_champion.Level</span>
         </div>
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">XP</div>
-                    <div class="fs-4 fw-bold">@_champion.XP</div>
-                </div>
-            </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">XP</span>
+            <span class="gg-stat-strip-val">@_champion.XP</span>
         </div>
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">Biome</div>
-                    <div class="fs-5 fw-bold">@_champion.Biome</div>
-                </div>
-            </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">HP</span>
+            <span class="gg-stat-strip-val">@_champion.HP<span class="gg-stat-strip-unit">/ @_champion.MaxHP</span></span>
         </div>
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">Class</div>
-                    <div class="fs-5 fw-bold">@_champion.Class</div>
-                </div>
-            </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Class</span>
+            <span class="gg-stat-strip-val" style="font-size:1.1rem">@_champion.Class</span>
         </div>
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">HP</div>
-                    <div class="fs-5 fw-bold">@_champion.HP / @_champion.MaxHP</div>
-                </div>
-            </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Biome</span>
+            <span class="gg-stat-strip-val" style="font-size:1.1rem">@_champion.Biome</span>
         </div>
-        <div class="col-6 col-md-2">
-            <div class="card text-center shadow-sm">
-                <div class="card-body py-2">
-                    <div class="small text-muted">Ticks</div>
-                    <div class="fs-4 fw-bold">@_narratives.Count</div>
-                </div>
-            </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Entries</span>
+            <span class="gg-stat-strip-val">@_narratives.Count</span>
         </div>
     </div>
 
+    <!-- Active power-up alert -->
     @if (_champion.PowerUpSlot is not null)
     {
-        <div class="alert alert-warning d-flex align-items-center gap-2 mb-4">
-            <span class="fs-5">&#9889;</span>
-            <span>Active power-up: <strong>@_champion.PowerUpSlot</strong> &mdash; @_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") remaining</span>
+        <div class="gg-power-badge" style="margin-bottom:2rem;display:inline-flex;">
+            <span class="material-symbols-outlined">bolt</span>
+            Active power-up: <strong style="margin-left:0.25rem">@_champion.PowerUpSlot</strong>
+            &nbsp;&mdash;&nbsp;@_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") remaining
         </div>
     }
 
     <!-- Stat grid -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-header fw-bold">Stats</div>
-        <div class="card-body">
-            <div class="row text-center g-2">
-                <div class="col"><div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div></div>
-                <div class="col"><div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div></div>
-                <div class="col"><div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div></div>
-                <div class="col"><div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div></div>
-                <div class="col"><div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div></div>
-            </div>
-        </div>
+    <div class="gg-stats-grid" style="margin-bottom:3rem;border-top:none;">
+        <div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div>
+        <div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div>
+        <div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div>
+        <div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div>
+        <div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div>
     </div>
 
-    <!-- Full chronicle -->
-    <div class="card shadow-sm">
-        <div class="card-header fw-bold d-flex justify-content-between align-items-center">
-            <span>Full Chronicle</span>
-            <span class="badge bg-secondary">@_narratives.Count entries</span>
-        </div>
-        <div class="card-body p-0">
-            @if (_narratives.Count == 0)
+    <!-- Timeline -->
+    @if (_narratives.Count == 0)
+    {
+        <p class="gg-empty-state">No entries yet. The first tick will begin your champion's story.</p>
+    }
+    else
+    {
+        <div class="gg-timeline">
+            @foreach (var entry in _narratives)
             {
-                <p class="text-muted p-3 mb-0">No entries yet. The first tick will begin your champion's story.</p>
-            }
-            else
-            {
-                <ul class="list-group list-group-flush">
-                    @foreach (var entry in _narratives)
-                    {
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="badge bg-light text-dark border">Tick @entry.TickNumber</span>
-                                <span class="text-muted small">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
-                            </div>
-                            <p class="mb-0">@entry.StoryText</p>
-                        </li>
-                    }
-                </ul>
+                <div class="gg-timeline-entry">
+                    <div class="gg-timeline-col">
+                        <span class="material-symbols-outlined">auto_stories</span>
+                        <div class="gg-timeline-line"></div>
+                    </div>
+                    <div class="gg-timeline-content">
+                        <div class="gg-timeline-header">
+                            <span class="gg-timeline-tick">Tick @entry.TickNumber</span>
+                            <span class="gg-timeline-heading" style="font-size:0.75rem;color:var(--gg-silver);opacity:0.35;">
+                                @entry.CreatedAt.ToLocalTime().ToString("g")
+                            </span>
+                        </div>
+                        <p class="gg-timeline-text">@entry.StoryText</p>
+                    </div>
+                </div>
             }
         </div>
-    </div>
+    }
 }
+
+<!-- FAB back button -->
+<a href="/" class="gg-fab" title="Back to Dashboard">
+    <span class="material-symbols-outlined">arrow_back</span>
+</a>
 
 @code {
     private ChampionDto? _champion;

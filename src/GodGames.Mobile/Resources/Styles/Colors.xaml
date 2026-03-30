@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Celestial Brilliance palette -->
+    <Color x:Key="GgBg">#050508</Color>
+    <Color x:Key="GgSurface">#131317</Color>
+    <Color x:Key="GgSurfaceLow">#1b1b1f</Color>
+    <Color x:Key="GgSurfaceMid">#1f1f23</Color>
+    <Color x:Key="GgSurfaceHigh">#2a292e</Color>
+    <Color x:Key="GgGold">#ffd700</Color>
+    <Color x:Key="GgGoldDim">#e9c400</Color>
+    <Color x:Key="GgCream">#fff6df</Color>
+    <Color x:Key="GgSilver">#bfc8ce</Color>
+    <Color x:Key="GgOnGold">#3a3000</Color>
+    <Color x:Key="GgOutline">#999077</Color>
+    <Color x:Key="GgOutlineVar">#4d4732</Color>
+    <Color x:Key="GgError">#ffb4ab</Color>
+    <Color x:Key="GgErrorBg">#93000a</Color>
+
+    <!-- Semantic aliases -->
+    <Color x:Key="Primary">#ffd700</Color>
+    <Color x:Key="PrimaryDark">#e9c400</Color>
+    <Color x:Key="PrimaryDarkText">#3a3000</Color>
+    <Color x:Key="Secondary">#bfc8ce</Color>
+    <Color x:Key="SecondaryDarkText">#9C9C9C</Color>
+    <Color x:Key="Tertiary">#2B0B98</Color>
+
+    <Color x:Key="White">#fff6df</Color>
+    <Color x:Key="Black">#050508</Color>
+
+    <Color x:Key="Magenta">#D600AA</Color>
+    <Color x:Key="MidnightBlue">#190649</Color>
+    <Color x:Key="OffBlack">#1f1f1f</Color>
+
+    <Color x:Key="Gray100">#E1E1E1</Color>
+    <Color x:Key="Gray200">#C8C8C8</Color>
+    <Color x:Key="Gray300">#ACACAC</Color>
+    <Color x:Key="Gray400">#919191</Color>
+    <Color x:Key="Gray500">#6E6E6E</Color>
+    <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray950">#141414</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
+
+</ResourceDictionary>

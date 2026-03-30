@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Become a God | Celestial Brilliance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary": "#293137",
+                        "surface-container": "#1f1f23",
+                        "surface-bright": "#39393d",
+                        "primary-fixed": "#ffe16d",
+                        "on-secondary-container": "#b1b9c0",
+                        "on-surface-variant": "#d0c6ab",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#5d4200",
+                        "surface-container-lowest": "#0e0e12",
+                        "on-primary-fixed-variant": "#544600",
+                        "inverse-primary": "#705d00",
+                        "tertiary-fixed-dim": "#f7bd48",
+                        "secondary-fixed": "#dbe4ea",
+                        "on-tertiary": "#412d00",
+                        "on-primary": "#3a3000",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#221b00",
+                        "on-tertiary-fixed": "#271900",
+                        "tertiary-fixed": "#ffdea6",
+                        "surface-tint": "#e9c400",
+                        "surface": "#131317",
+                        "on-secondary-fixed-variant": "#40484d",
+                        "surface-dim": "#131317",
+                        "on-surface": "#e5e1e7",
+                        "inverse-surface": "#e5e1e7",
+                        "surface-container-highest": "#353439",
+                        "on-primary-container": "#705e00",
+                        "tertiary": "#fff5ea",
+                        "tertiary-container": "#ffd486",
+                        "surface-container-low": "#1b1b1f",
+                        "background": "#131317",
+                        "primary-fixed-dim": "#e9c400",
+                        "primary-container": "#ffd700",
+                        "outline": "#999077",
+                        "on-secondary-fixed": "#151d22",
+                        "on-tertiary-container": "#7c5900",
+                        "secondary-container": "#424a50",
+                        "primary": "#fff6df",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#303034",
+                        "secondary": "#bfc8ce",
+                        "outline-variant": "#4d4732",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#353439",
+                        "secondary-fixed-dim": "#bfc8ce",
+                        "surface-container-high": "#2a292e",
+                        "on-background": "#e5e1e7"
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Work Sans", "sans-serif"],
+                        "label": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #050508;
+            color: #e5e1e7;
+            font-family: 'Work Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .celestial-bg {
+            background: radial-gradient(circle at 50% 50%, #131317 0%, #050508 100%);
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+        .star-field {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ffd700, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #ffd700, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        .solar-shimmer {
+            background: linear-gradient(135deg, #e9c400 0%, #fff6df 50%, #e9c400 100%);
+            background-size: 200% 200%;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 10px 30px -10px rgba(255, 215, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+<div class="celestial-bg"></div>
+<div class="star-field"></div>
+<main class="w-full max-w-[440px] z-10">
+<!-- Brand Header (Implicit Top-Level Context) -->
+<div class="mb-12 text-center">
+<div class="flex justify-center mb-6">
+<div class="w-16 h-16 bg-surface-container-high border-t border-primary-container/30 flex items-center justify-center shadow-[0_0_40px_rgba(255,215,0,0.05)]">
+<span class="material-symbols-outlined text-primary-container text-4xl" data-icon="auto_awesome">auto_awesome</span>
+</div>
+</div>
+<h1 class="font-headline text-4xl font-light tracking-[0.05em] text-primary mb-2">Become a God</h1>
+<p class="font-body text-secondary text-sm tracking-widest uppercase opacity-70">Enter your divine credentials</p>
+</div>
+<!-- Auth Card -->
+<div class="bg-surface-container-low border-t-2 border-primary-container shadow-[0_40px_80px_rgba(0,0,0,0.5)] relative overflow-hidden">
+<!-- Subtle Radial Lens Flare -->
+<div class="absolute top-0 right-0 w-[150px] h-[150px] bg-primary-container/5 blur-[80px] -mr-12 -mt-12 pointer-events-none"></div>
+<form class="p-10 space-y-8">
+<!-- Divine Identity -->
+<div class="space-y-6">
+<div class="relative group">
+<label class="block text-[10px] uppercase tracking-[0.2em] text-outline mb-2 group-focus-within:text-primary transition-colors">Celestial Name</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-3 font-body text-on-surface placeholder:text-outline/30 focus:border-primary transition-all duration-500 rounded-none px-0" placeholder="Aurelius Prime" type="text"/>
+</div>
+<div class="relative group">
+<label class="block text-[10px] uppercase tracking-[0.2em] text-outline mb-2 group-focus-within:text-primary transition-colors">Astral Resonance (Email)</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-3 font-body text-on-surface placeholder:text-outline/30 focus:border-primary transition-all duration-500 rounded-none px-0" placeholder="essence@void.com" type="email"/>
+</div>
+<div class="relative group">
+<label class="block text-[10px] uppercase tracking-[0.2em] text-outline mb-2 group-focus-within:text-primary transition-colors">Secret Sigil (Password)</label>
+<input class="w-full bg-transparent border-b border-outline-variant py-3 font-body text-on-surface placeholder:text-outline/30 focus:border-primary transition-all duration-500 rounded-none px-0" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-start gap-4">
+<div class="relative flex items-center h-5">
+<input class="w-4 h-4 bg-surface-container-highest border-outline-variant text-primary-fixed-dim focus:ring-0 rounded-none cursor-pointer" type="checkbox"/>
+</div>
+<p class="text-[11px] text-secondary leading-relaxed">
+                        I accept the <a class="text-primary-container hover:text-primary transition-colors" href="#">Ethereal Covenants</a> and acknowledge the weight of my divine ascension.
+                    </p>
+</div>
+<!-- CTA -->
+<button class="w-full group relative flex items-center justify-center py-5 overflow-hidden transition-transform duration-500 active:scale-95" type="submit">
+<div class="absolute inset-0 solar-shimmer opacity-100 group-hover:opacity-90 transition-opacity"></div>
+<span class="relative z-10 font-label text-[12px] font-bold tracking-[0.3em] uppercase text-on-primary">Ascend</span>
+<!-- Button Hover Glow -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+</button>
+</form>
+<div class="bg-surface-container px-10 py-6 text-center">
+<p class="text-[11px] text-secondary tracking-widest uppercase">
+                    Already an immortal? <a class="text-primary-container font-semibold hover:text-primary transition-colors ml-2 underline underline-offset-4 decoration-primary-container/30" href="#">Recall Essence</a>
+</p>
+</div>
+</div>
+<!-- Footnote -->
+<div class="mt-12 text-center opacity-30 group">
+<p class="font-headline italic text-sm text-secondary group-hover:opacity-100 transition-opacity duration-700">"The stars are but witnesses to your becoming."</p>
+</div>
+</main>
+<!-- Decorative Corner Element (Asymmetry) -->
+<div class="fixed bottom-12 right-12 hidden lg:block pointer-events-none opacity-20">
+<div class="w-32 h-32 border-r border-b border-primary-container/50 relative">
+<div class="absolute top-0 right-0 w-2 h-2 bg-primary-container"></div>
+<div class="absolute bottom-0 left-0 w-2 h-2 bg-primary-container"></div>
+</div>
+</div>
+</body></html>

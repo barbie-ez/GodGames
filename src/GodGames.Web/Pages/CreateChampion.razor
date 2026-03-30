@@ -3,43 +3,121 @@
 @inject GodGamesApiClient Api
 @inject NavigationManager Nav
 
-<PageTitle>Create Champion — God Games</PageTitle>
+<PageTitle>Summon Champion — God Games</PageTitle>
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <h2 class="mb-1">Your Champion Awaits</h2>
-        <p class="text-muted mb-4">Forge a mortal to carry out your divine will.</p>
+<div class="cc-wrap">
+    <div class="monolith-card celestial-glow cc-card">
+        <div class="cc-header">
+            <h2 class="cc-title">
+                Summon Your <span class="text-gold">Champion</span>
+            </h2>
+            <p class="cc-subtitle">Choose wisely. This soul carries your legacy across the eternal void.</p>
+        </div>
 
         @if (!string.IsNullOrEmpty(_error))
         {
-            <div class="alert alert-danger">@_error</div>
+            <div class="auth-alert auth-alert--error mb-4">@_error</div>
         }
 
         <EditForm Model="_model" OnValidSubmit="HandleCreate">
-            <div class="mb-3">
-                <label class="form-label">Champion Name</label>
-                <InputText @bind-Value="_model.Name" class="form-control" placeholder="e.g. Aldric the Bold" />
+
+            <!-- Champion Name -->
+            <div class="cc-field">
+                <label class="auth-label">Champion Name</label>
+                <InputText @bind-Value="_model.Name" class="input-altar cc-name-input"
+                           placeholder="e.g. Aldric the Bold" />
             </div>
-            <div class="mb-3">
-                <label class="form-label">Class</label>
-                <InputSelect @bind-Value="_model.Class" class="form-select">
-                    <option value="@ChampionClass.Warrior">&#9876; Warrior</option>
-                    <option value="@ChampionClass.Mage">&#128302; Mage</option>
-                    <option value="@ChampionClass.Rogue">&#128505; Rogue</option>
+
+            <!-- Class Selection -->
+            <div class="cc-section">
+                <label class="cc-section-label">Select Calling</label>
+                <div class="cc-class-grid">
+                    <div class="cc-class-tile @(_model.Class == ChampionClass.Warrior ? "cc-class-tile--active" : "")"
+                         @onclick='() => _model.Class = ChampionClass.Warrior'>
+                        <span class="material-symbols-outlined cc-class-icon">shield</span>
+                        <p class="cc-class-name">Warrior</p>
+                        <div class="cc-class-dot @(_model.Class == ChampionClass.Warrior ? "cc-class-dot--active" : "")"></div>
+                    </div>
+                    <div class="cc-class-tile @(_model.Class == ChampionClass.Mage ? "cc-class-tile--active" : "")"
+                         @onclick='() => _model.Class = ChampionClass.Mage'>
+                        <span class="material-symbols-outlined cc-class-icon">auto_fix_normal</span>
+                        <p class="cc-class-name">Mage</p>
+                        <div class="cc-class-dot @(_model.Class == ChampionClass.Mage ? "cc-class-dot--active" : "")"></div>
+                    </div>
+                    <div class="cc-class-tile @(_model.Class == ChampionClass.Rogue ? "cc-class-tile--active" : "")"
+                         @onclick='() => _model.Class = ChampionClass.Rogue'>
+                        <span class="material-symbols-outlined cc-class-icon">architecture</span>
+                        <p class="cc-class-name">Rogue</p>
+                        <div class="cc-class-dot @(_model.Class == ChampionClass.Rogue ? "cc-class-dot--active" : "")"></div>
+                    </div>
+                </div>
+                <!-- Hidden select keeps data binding for form submission -->
+                <InputSelect @bind-Value="_model.Class" class="cc-hidden-select">
+                    <option value="@ChampionClass.Warrior">Warrior</option>
+                    <option value="@ChampionClass.Mage">Mage</option>
+                    <option value="@ChampionClass.Rogue">Rogue</option>
                 </InputSelect>
             </div>
-            <div class="mb-4">
-                <label class="form-label">Personality Trait</label>
-                <InputSelect @bind-Value="_model.PersonalityTrait" class="form-select">
-                    <option value="@PersonalityTrait.Brave">Brave — +10% combat events, +5% combat bonus</option>
-                    <option value="@PersonalityTrait.Cautious">Cautious — +10% safe events, -5% damage taken</option>
-                    <option value="@PersonalityTrait.Reckless">Reckless — +20% combat, higher variance wins/losses</option>
-                    <option value="@PersonalityTrait.Cunning">Cunning — +15% loot events, better intervention effects</option>
+
+            <!-- Personality Selection -->
+            <div class="cc-section">
+                <label class="cc-section-label">Spirit Alignment</label>
+                <div class="cc-trait-grid">
+                    <div class="cc-trait-tile @(_model.PersonalityTrait == PersonalityTrait.Brave ? "cc-trait-tile--active" : "")"
+                         @onclick='() => _model.PersonalityTrait = PersonalityTrait.Brave'>
+                        <div class="cc-trait-top">
+                            <span class="material-symbols-outlined cc-trait-icon">bolt</span>
+                            <div class="cc-trait-dot @(_model.PersonalityTrait == PersonalityTrait.Brave ? "cc-trait-dot--active" : "")"></div>
+                        </div>
+                        <p class="cc-trait-name">Brave</p>
+                        <p class="cc-trait-desc">Unwavering resolve</p>
+                    </div>
+                    <div class="cc-trait-tile @(_model.PersonalityTrait == PersonalityTrait.Cautious ? "cc-trait-tile--active" : "")"
+                         @onclick='() => _model.PersonalityTrait = PersonalityTrait.Cautious'>
+                        <div class="cc-trait-top">
+                            <span class="material-symbols-outlined cc-trait-icon">visibility</span>
+                        </div>
+                        <p class="cc-trait-name">Cautious</p>
+                        <p class="cc-trait-desc">Tactical calculation</p>
+                    </div>
+                    <div class="cc-trait-tile @(_model.PersonalityTrait == PersonalityTrait.Reckless ? "cc-trait-tile--active" : "")"
+                         @onclick='() => _model.PersonalityTrait = PersonalityTrait.Reckless'>
+                        <div class="cc-trait-top">
+                            <span class="material-symbols-outlined cc-trait-icon">whatshot</span>
+                        </div>
+                        <p class="cc-trait-name">Reckless</p>
+                        <p class="cc-trait-desc">Chaos fuelled power</p>
+                    </div>
+                    <div class="cc-trait-tile @(_model.PersonalityTrait == PersonalityTrait.Cunning ? "cc-trait-tile--active" : "")"
+                         @onclick='() => _model.PersonalityTrait = PersonalityTrait.Cunning'>
+                        <div class="cc-trait-top">
+                            <span class="material-symbols-outlined cc-trait-icon">psychology</span>
+                        </div>
+                        <p class="cc-trait-name">Cunning</p>
+                        <p class="cc-trait-desc">Master of shadows</p>
+                    </div>
+                </div>
+                <!-- Hidden select keeps data binding -->
+                <InputSelect @bind-Value="_model.PersonalityTrait" class="cc-hidden-select">
+                    <option value="@PersonalityTrait.Brave">Brave</option>
+                    <option value="@PersonalityTrait.Cautious">Cautious</option>
+                    <option value="@PersonalityTrait.Reckless">Reckless</option>
+                    <option value="@PersonalityTrait.Cunning">Cunning</option>
                 </InputSelect>
             </div>
-            <button type="submit" class="btn btn-primary w-100" disabled="@_loading">
-                @(_loading ? "Summoning…" : "Summon Champion")
-            </button>
+
+            <!-- Submit -->
+            <div class="cc-cta">
+                <button type="submit" class="solar-flare cc-submit" disabled="@_loading">
+                    <span>@(_loading ? "Summoning…" : "Summon Champion")</span>
+                    @if (!_loading)
+                    {
+                        <span class="material-symbols-outlined">auto_awesome</span>
+                    }
+                </button>
+                <p class="cc-fine-print">Once summoned, the archive remains eternal.</p>
+            </div>
+
         </EditForm>
     </div>
 </div>

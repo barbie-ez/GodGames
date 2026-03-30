@@ -4,34 +4,29 @@
 
 <PageTitle>World Map — God Games</PageTitle>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">World Map</h4>
-    @if (_champion is not null)
-    {
-        <span class="text-muted small">Your champion is in <strong>@CurrentRegionName</strong></span>
-    }
-</div>
-
 @if (_loading)
 {
-    <div class="text-center mt-5">
-        <div class="spinner-border text-primary" role="status"></div>
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Charting the realm…</span>
     </div>
 }
 else
 {
-    <div class="d-flex justify-content-center">
-        <div style="max-width:420px;width:100%">
+    <div class="gg-map-layout">
+
+        <!-- SVG map canvas -->
+        <div class="gg-map-canvas">
             <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg"
-                 style="width:100%;border:1px solid #333;border-radius:8px;background:#1a1a2e">
+                 style="width:100%;height:100%">
 
                 <!-- Static zone labels and dividers -->
                 @((MarkupString)@"
-                <text x='200' y='22' text-anchor='middle' fill='#ff6b6b' font-size='13' font-weight='bold' font-family='sans-serif'>DANGEROUS</text>
-                <text x='200' y='222' text-anchor='middle' fill='#ffd93d' font-size='13' font-weight='bold' font-family='sans-serif'>NORMAL</text>
-                <text x='200' y='422' text-anchor='middle' fill='#6bcb77' font-size='13' font-weight='bold' font-family='sans-serif'>SAFE</text>
-                <line x1='20' y1='210' x2='380' y2='210' stroke='#444' stroke-width='1' stroke-dasharray='6,4'/>
-                <line x1='20' y1='400' x2='380' y2='400' stroke='#444' stroke-width='1' stroke-dasharray='6,4'/>
+                <text x='200' y='22' text-anchor='middle' fill='#ffb4ab' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>DANGEROUS</text>
+                <text x='200' y='222' text-anchor='middle' fill='#ffd700' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>NORMAL</text>
+                <text x='200' y='422' text-anchor='middle' fill='#6bcb77' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>SAFE</text>
+                <line x1='20' y1='210' x2='380' y2='210' stroke='rgba(77,71,50,0.3)' stroke-width='1' stroke-dasharray='6,4'/>
+                <line x1='20' y1='400' x2='380' y2='400' stroke='rgba(77,71,50,0.3)' stroke-width='1' stroke-dasharray='6,4'/>
                 ")
 
                 @foreach (var region in _regions)
@@ -39,12 +34,12 @@ else
                     var explored = IsExplored(region.Id);
                     var isCurrent = region.Id == (_champion?.CurrentRegionId ?? "");
                     var fillColor = RegionFill(region.Biome, explored);
-                    var strokeColor = isCurrent ? "#fff" : "#555";
-                    var strokeWidth = isCurrent ? "2.5" : "1";
-                    var opacity = explored ? "1" : "0.4";
+                    var strokeColor = isCurrent ? "#ffd700" : "rgba(77,71,50,0.5)";
+                    var strokeWidth = isCurrent ? "2" : "1";
+                    var opacity = explored ? "1" : "0.35";
 
                     <g @onclick="() => SelectRegion(region)" style="cursor:pointer">
-                        <circle cx="@region.MapX" cy="@region.MapY" r="30"
+                        <circle cx="@region.MapX" cy="@region.MapY" r="28"
                                 fill="@fillColor"
                                 stroke="@strokeColor"
                                 stroke-width="@strokeWidth"
@@ -52,67 +47,81 @@ else
 
                         @if (!explored)
                         {
-                            <circle cx="@region.MapX" cy="@region.MapY" r="30"
+                            <circle cx="@region.MapX" cy="@region.MapY" r="28"
                                     fill="#000" opacity="0.5"/>
-                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#888' font-size='18' font-family='sans-serif'>?</text>")
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='rgba(153,144,119,0.5)' font-size='16' font-family='sans-serif'>?</text>")
                         }
                         else
                         {
-                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY - 35}' text-anchor='middle' fill='#ddd' font-size='9' font-family='sans-serif' style='pointer-events:none'>{System.Net.WebUtility.HtmlEncode(region.Name)}</text>")
-                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#fff' font-size='11' font-family='sans-serif' style='pointer-events:none'>{DifficultyPips(region.DifficultyRating)}</text>")
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY - 33}' text-anchor='middle' fill='#bfc8ce' font-size='8' font-family='Work Sans, sans-serif' letter-spacing='0.1em' style='pointer-events:none'>{System.Net.WebUtility.HtmlEncode(region.Name)}</text>")
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#fff6df' font-size='10' font-family='sans-serif' style='pointer-events:none'>{DifficultyPips(region.DifficultyRating)}</text>")
                         }
 
                         @if (isCurrent)
                         {
-                            <circle cx="@region.MapX" cy="@region.MapY" r="38"
-                                    fill="none" stroke="#fff" stroke-width="1.5"
+                            <circle cx="@region.MapX" cy="@region.MapY" r="36"
+                                    fill="none" stroke="#ffd700" stroke-width="1"
                                     class="champion-pulse"/>
                         }
                     </g>
                 }
             </svg>
         </div>
-    </div>
 
-    <!-- Region info panel -->
-    @if (_selected is not null)
-    {
-        <div class="card mt-3 shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="fw-bold">@_selected.Name</span>
-                <span class="badge @BiomeBadge(_selected.Biome)">@_selected.Biome</span>
-            </div>
-            <div class="card-body">
-                <p class="mb-2 text-muted">@_selected.Description</p>
-                <div class="row g-2 small">
-                    <div class="col-6">
-                        <span class="text-muted">Difficulty:</span>
-                        <strong>@_selected.DifficultyRating / 10</strong>
-                    </div>
-                    <div class="col-6">
-                        <span class="text-muted">Min level:</span>
-                        <strong>@_selected.MinLevelRequired</strong>
-                    </div>
-                    <div class="col-12">
-                        <span class="text-muted">Events:</span>
-                        <strong>@_selected.ActiveEventTypes</strong>
-                    </div>
+        <!-- Region detail panel -->
+        <div class="gg-region-panel">
+            @if (_selected is null)
+            {
+                <div class="gg-region-panel__header">
+                    <p class="gg-region-panel__title" style="opacity:0.3;font-size:1rem;">Select a region</p>
+                    @if (_champion is not null)
+                    {
+                        <p style="font-size:0.7rem;color:var(--gg-silver);opacity:0.4;margin-top:0.5rem;">
+                            Your champion is in <strong style="color:var(--gg-cream)">@CurrentRegionName</strong>
+                        </p>
+                    }
                 </div>
-                @if (_champion is not null && _selected.Id != _champion.CurrentRegionId)
-                {
-                    <div class="mt-2 text-muted small">
-                        Issue <code>move to @_selected.Name</code> as your intervention to travel here.
+            }
+            else
+            {
+                <div class="gg-region-panel__header">
+                    <p class="gg-region-panel__title">@_selected.Name</p>
+                    <span class="gg-biome-badge gg-biome-badge--@_selected.Biome.ToLower()" style="margin-top:0.5rem;display:inline-block;">@_selected.Biome</span>
+                </div>
+                <div class="gg-region-panel__body">
+                    <p style="font-size:0.8rem;color:var(--gg-silver);opacity:0.65;margin-bottom:1.5rem;line-height:1.65;">@_selected.Description</p>
+                    <div class="gg-region-stat-grid">
+                        <div class="gg-region-stat">
+                            <span class="gg-region-stat-label">Difficulty</span>
+                            <span class="gg-region-stat-val">@_selected.DifficultyRating / 10</span>
+                        </div>
+                        <div class="gg-region-stat">
+                            <span class="gg-region-stat-label">Min Level</span>
+                            <span class="gg-region-stat-val">@_selected.MinLevelRequired</span>
+                        </div>
+                        <div class="gg-region-stat" style="grid-column:span 2;border-right:none;">
+                            <span class="gg-region-stat-label">Active Events</span>
+                            <span class="gg-region-stat-val" style="font-size:0.85rem;">@_selected.ActiveEventTypes</span>
+                        </div>
                     </div>
-                }
-                else if (_selected.Id == _champion?.CurrentRegionId)
-                {
-                    <div class="mt-2">
-                        <span class="badge bg-light text-dark border">Your champion is here</span>
-                    </div>
-                }
-            </div>
+
+                    @if (_champion is not null && _selected.Id != _champion.CurrentRegionId)
+                    {
+                        <p style="margin-top:1.5rem;font-size:0.7rem;color:var(--gg-silver);opacity:0.45;line-height:1.6;">
+                            Issue <code style="color:var(--gg-gold);background:rgba(255,215,0,0.08);padding:1px 6px;">move to @_selected.Name</code> as your intervention to travel here.
+                        </p>
+                    }
+                    else if (_selected.Id == _champion?.CurrentRegionId)
+                    {
+                        <p style="margin-top:1.5rem;">
+                            <span class="gg-level-badge">Your champion is here</span>
+                        </p>
+                    }
+                </div>
+            }
         </div>
-    }
+
+    </div>
 }
 
 <style>
@@ -168,13 +177,13 @@ else
 
     private static string RegionFill(string biome, bool explored)
     {
-        if (!explored) return "#2a2a3e";
+        if (!explored) return "rgba(19,19,23,0.8)";
         return biome switch
         {
-            "Safe"      => "#2d6a4f",
-            "Normal"    => "#7b4f12",
-            "Dangerous" => "#7b1c1c",
-            _           => "#444"
+            "Safe"      => "rgba(45,106,79,0.5)",
+            "Normal"    => "rgba(123,79,18,0.5)",
+            "Dangerous" => "rgba(147,0,10,0.5)",
+            _           => "rgba(77,71,50,0.3)"
         };
     }
 

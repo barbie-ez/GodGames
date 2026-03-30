@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GodGames.Mobile.ViewModels"
+             xmlns:models="clr-namespace:GodGames.Mobile.Models"
+             x:Class="GodGames.Mobile.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
+             Title="Dashboard"
+             BackgroundColor="{StaticResource GgBg}">
+
+    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsLoading}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="0">
+
+                <!-- Loading -->
+                <VerticalStackLayout IsVisible="{Binding IsLoading}" Padding="24,80" HorizontalOptions="Center">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}" Color="{StaticResource GgGold}" />
+                    <Label Text="Consulting the heavens…" FontSize="12" TextColor="{StaticResource GgSilver}" Opacity="0.4"
+                           HorizontalTextAlignment="Center" Margin="0,12,0,0" />
+                </VerticalStackLayout>
+
+                <!-- Champion card -->
+                <VerticalStackLayout IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}" Spacing="0">
+
+                    <!-- Profile header -->
+                    <Grid BackgroundColor="{StaticResource GgSurface}" Padding="20,16" ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="4">
+                            <Label Text="{Binding Champion.Name}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontSize="22"
+                                   TextColor="{StaticResource GgCream}" />
+                            <Label Text="{Binding LevelBadge}"
+                                   FontSize="10"
+                                   CharacterSpacing="2"
+                                   TextColor="{StaticResource GgGold}"
+                                   Opacity="0.8" />
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1"
+                                Text="↩ OUT"
+                                FontSize="9"
+                                CharacterSpacing="2"
+                                BackgroundColor="Transparent"
+                                TextColor="{StaticResource GgOutline}"
+                                Command="{Binding LogoutCommand}"
+                                Padding="8,6"
+                                VerticalOptions="Start" />
+                    </Grid>
+
+                    <!-- HP / XP bars -->
+                    <VerticalStackLayout BackgroundColor="{StaticResource GgSurfaceLow}" Padding="20,16" Spacing="12">
+                        <!-- HP -->
+                        <Grid ColumnDefinitions="30,*,60" RowDefinitions="Auto,8">
+                            <Label Grid.Column="0" Grid.Row="0" Text="HP" FontSize="9" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.6" VerticalOptions="End" />
+                            <Label Grid.Column="2" Grid.Row="0" Text="{Binding HpLabel}" FontSize="10" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="End" />
+                            <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BackgroundColor="{StaticResource GgSurfaceHigh}" HeightRequest="2" />
+                            <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+                                     BackgroundColor="#c62828"
+                                     HeightRequest="2"
+                                     HorizontalOptions="Start"
+                                     WidthRequest="{Binding HpPercent, Converter={StaticResource PercentToWidthConverter}}" />
+                        </Grid>
+                        <!-- XP -->
+                        <Grid ColumnDefinitions="30,*,60" RowDefinitions="Auto,8">
+                            <Label Grid.Column="0" Grid.Row="0" Text="XP" FontSize="9" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.6" VerticalOptions="End" />
+                            <Label Grid.Column="2" Grid.Row="0" Text="{Binding XpLabel}" FontSize="10" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="End" />
+                            <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" BackgroundColor="{StaticResource GgSurfaceHigh}" HeightRequest="2" />
+                            <BoxView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1"
+                                     BackgroundColor="{StaticResource GgGold}"
+                                     HeightRequest="2"
+                                     HorizontalOptions="Start"
+                                     WidthRequest="{Binding XpPercent, Converter={StaticResource PercentToWidthConverter}}" />
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Stats grid -->
+                    <Grid BackgroundColor="{StaticResource GgSurfaceMid}"
+                          ColumnDefinitions="*,*,*,*,*"
+                          Margin="0,1,0,0">
+                        <VerticalStackLayout Grid.Column="0" Padding="12,14" Spacing="4">
+                            <Label Text="STR" FontSize="8" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Champion.STR}" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{StaticResource GgGold}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Padding="12,14" Spacing="4">
+                            <Label Text="DEX" FontSize="8" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Champion.DEX}" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{StaticResource GgGold}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2" Padding="12,14" Spacing="4">
+                            <Label Text="INT" FontSize="8" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Champion.INT}" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{StaticResource GgGold}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="3" Padding="12,14" Spacing="4">
+                            <Label Text="WIS" FontSize="8" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Champion.WIS}" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{StaticResource GgGold}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="4" Padding="12,14" Spacing="4">
+                            <Label Text="VIT" FontSize="8" CharacterSpacing="2" TextColor="{StaticResource GgSilver}" Opacity="0.5" HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding Champion.VIT}" FontFamily="OpenSansSemibold" FontSize="18" TextColor="{StaticResource GgGold}" HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <!-- Trait / buff row -->
+                    <HorizontalStackLayout BackgroundColor="{StaticResource GgSurfaceLow}" Padding="20,12" Spacing="8">
+                        <Border BackgroundColor="#1e2a1e" Padding="6,3" StrokeThickness="0">
+                            <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                            <Label Text="{Binding TraitLabel}" FontSize="10" CharacterSpacing="1" TextColor="#6bcb77" />
+                        </Border>
+                        <Border BackgroundColor="#1a1500" Padding="6,3" StrokeThickness="0" IsVisible="{Binding HasPowerUp}">
+                            <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                            <Label Text="{Binding PowerUpText}" FontSize="10" CharacterSpacing="1" TextColor="{StaticResource GgGold}" />
+                        </Border>
+                        <Border BackgroundColor="#3b000a" Padding="6,3" StrokeThickness="0" IsVisible="{Binding HasDebuff}">
+                            <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                            <Label Text="{Binding DebuffText}" FontSize="10" CharacterSpacing="1" TextColor="{StaticResource GgError}" />
+                        </Border>
+                    </HorizontalStackLayout>
+
+                    <!-- Intervention panel -->
+                    <VerticalStackLayout BackgroundColor="{StaticResource GgSurface}" Padding="20,20" Spacing="12" Margin="0,8,0,0">
+                        <Label Text="DIVINE INTERVENTION"
+                               FontSize="10"
+                               CharacterSpacing="3"
+                               TextColor="{StaticResource GgGold}"
+                               Opacity="0.7" />
+
+                        <VerticalStackLayout IsVisible="{Binding InterventionSent}">
+                            <Border BackgroundColor="#1a1500" Padding="12,10" StrokeThickness="0">
+                                <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                                <Label Text="Your command has been received. It will be applied on the next tick."
+                                       FontSize="13" TextColor="{StaticResource GgCream}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="12"
+                                             IsVisible="{Binding InterventionSent, Converter={StaticResource InverseBoolConverter}}">
+                            <Label Text="Issue a divine command to aid your champion (one per tick window)."
+                                   FontSize="11" TextColor="{StaticResource GgSilver}" Opacity="0.5" />
+                            <Editor Text="{Binding Command}"
+                                    Placeholder="e.g. blessed blade, heal, divine shield…"
+                                    BackgroundColor="{StaticResource GgSurfaceLow}"
+                                    MinimumHeightRequest="80"
+                                    AutoSize="TextChanges" />
+                            <BoxView HeightRequest="1" BackgroundColor="{StaticResource GgOutlineVar}" />
+                            <Label Text="{Binding CommandError}" TextColor="{StaticResource GgError}" FontSize="11"
+                                   IsVisible="{Binding CommandError, Converter={StaticResource StringNotEmptyConverter}}" />
+                            <Button Text="{Binding IsBusy, Converter={StaticResource BusyToTextConverter}, ConverterParameter='ISSUING…|ISSUE COMMAND'}"
+                                    Command="{Binding SubmitInterventionCommand}"
+                                    IsEnabled="{Binding IsNotBusy}"
+                                    BackgroundColor="{StaticResource GgGold}"
+                                    TextColor="{StaticResource GgOnGold}"
+                                    FontSize="11"
+                                    CharacterSpacing="2"
+                                    CornerRadius="0"
+                                    Padding="0,16" />
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Chronicle preview -->
+                    <VerticalStackLayout Padding="20,20,20,0" Spacing="12" BackgroundColor="{StaticResource GgBg}" Margin="0,8,0,0">
+                        <Label Text="CHRONICLE"
+                               FontSize="10"
+                               CharacterSpacing="3"
+                               TextColor="{StaticResource GgGold}"
+                               Opacity="0.7" />
+                        <CollectionView ItemsSource="{Binding Narratives}" SelectionMode="None">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:NarrativeEntryDto">
+                                    <VerticalStackLayout Padding="0,12,0,12" Spacing="6">
+                                        <BoxView HeightRequest="1" BackgroundColor="{StaticResource GgSurface}" />
+                                        <HorizontalStackLayout Spacing="12">
+                                            <Border BackgroundColor="Transparent" Padding="4,2" Stroke="{StaticResource GgGold}" StrokeThickness="1">
+                                                <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                                                <Label Text="{Binding TickNumber, StringFormat='TICK {0}'}"
+                                                       FontSize="9" CharacterSpacing="2" TextColor="{StaticResource GgGold}" />
+                                            </Border>
+                                            <Label Text="{Binding CreatedAt, StringFormat='{0:g}'}"
+                                                   FontSize="10" TextColor="{StaticResource GgSilver}" Opacity="0.35" VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                        <Label Text="{Binding StoryText}"
+                                               FontSize="13"
+                                               TextColor="{StaticResource GgSilver}"
+                                               Opacity="0.8"
+                                               LineBreakMode="WordWrap" />
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="40" BackgroundColor="{StaticResource GgBg}" />
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

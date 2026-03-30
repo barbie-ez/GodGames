@@ -1,66 +1,68 @@
 @inject AuthService Auth
 @inject NavigationManager Nav
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">⚡ God Games</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="gg-sidebar @(_collapsed ? "gg-sidebar--collapsed" : "")">
+    <div class="gg-sidebar__brand">
+        <h1 class="gg-sidebar__title">God Games</h1>
+        <p class="gg-sidebar__subtitle">The Astral Archive</p>
     </div>
-</div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
+    <button class="gg-sidebar__toggle" @onclick="ToggleSidebar" title="Toggle navigation">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div class="gg-sidebar__nav">
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                        Dashboard
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/champion/history">
-                        Chronicle
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/world-map">
-                        World Map
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/leaderboard">
-                        Leaderboard
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3 mt-auto">
-                    <button class="nav-link btn btn-link text-start w-100" @onclick="Logout">
-                        Sign Out
-                    </button>
-                </div>
+                <NavLink class="gg-nav-item" href="" Match="NavLinkMatch.All">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="gg-nav-item__label">Dashboard</span>
+                </NavLink>
+                <NavLink class="gg-nav-item" href="/champion/history">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <span class="gg-nav-item__label">Chronicle</span>
+                </NavLink>
+                <NavLink class="gg-nav-item" href="/world-map">
+                    <span class="material-symbols-outlined">public</span>
+                    <span class="gg-nav-item__label">World Map</span>
+                </NavLink>
+                <NavLink class="gg-nav-item" href="/leaderboard">
+                    <span class="material-symbols-outlined">leaderboard</span>
+                    <span class="gg-nav-item__label">Leaderboard</span>
+                </NavLink>
             </Authorized>
             <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/leaderboard">
-                        Leaderboard
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/login">Sign In</NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/register">Register</NavLink>
-                </div>
+                <NavLink class="gg-nav-item" href="/leaderboard">
+                    <span class="material-symbols-outlined">leaderboard</span>
+                    <span class="gg-nav-item__label">Leaderboard</span>
+                </NavLink>
+                <NavLink class="gg-nav-item" href="/login">
+                    <span class="material-symbols-outlined">login</span>
+                    <span class="gg-nav-item__label">Sign In</span>
+                </NavLink>
+                <NavLink class="gg-nav-item" href="/register">
+                    <span class="material-symbols-outlined">person_add</span>
+                    <span class="gg-nav-item__label">Register</span>
+                </NavLink>
             </NotAuthorized>
         </AuthorizeView>
-    </nav>
-</div>
+    </div>
+
+    <div class="gg-sidebar__footer">
+        <AuthorizeView>
+            <Authorized>
+                <button class="gg-signout-btn" @onclick="Logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="gg-nav-item__label">Sign Out</span>
+                </button>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+    private bool _collapsed = true;
+    private void ToggleSidebar() => _collapsed = !_collapsed;
 
     private async Task Logout()
     {

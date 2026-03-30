@@ -1,20 +1,17 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
+<div class="gg-layout">
+    <NavMenu />
+    <div class="gg-main">
+        <header class="gg-topbar">
             <AuthorizeView>
                 <Authorized>
-                    <span class="text-muted small">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</span>
+                    <span class="gg-topbar__email">@context.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</span>
                 </Authorized>
             </AuthorizeView>
-        </div>
-
-        <article class="content px-4">
+        </header>
+        <article class="gg-content">
             @Body
         </article>
-    </main>
+    </div>
 </div>

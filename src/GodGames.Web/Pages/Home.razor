@@ -10,137 +10,146 @@
 
 @if (_loading)
 {
-    <div class="text-center mt-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-2 text-muted">Consulting the heavens…</p>
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Consulting the heavens…</span>
     </div>
 }
 else if (_champion is not null)
 {
-    <div class="row g-4">
+    <div class="gg-dashboard">
 
-        <!-- Champion card -->
-        <div class="col-md-5">
-            <div class="card shadow-sm">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span class="fw-bold fs-5">@_champion.Name</span>
-                    <span class="badge bg-secondary">Lv. @_champion.Level — @_champion.Class</span>
+        <!-- Champion card (left column) -->
+        <div class="gg-profile-card">
+            <div class="gg-profile-header">
+                <div>
+                    <p class="gg-champion-name">@_champion.Name</p>
                 </div>
-                <div class="card-body">
-                    <!-- HP bar -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small text-muted mb-1">
-                            <span>HP</span><span>@_champion.HP / @_champion.MaxHP</span>
-                        </div>
-                        <div class="progress" style="height:10px">
-                            <div class="progress-bar bg-danger" style="width:@HpPercent%"></div>
-                        </div>
+                <span class="gg-level-badge">Lv. @_champion.Level — @_champion.Class</span>
+            </div>
+
+            <div class="gg-profile-body">
+                <!-- HP bar -->
+                <div class="gg-bar-row">
+                    <span class="gg-bar-key">HP</span>
+                    <div class="gg-bar-track">
+                        <div class="gg-bar-fill gg-bar-fill--hp" style="width:@HpPercent%"></div>
                     </div>
-                    <!-- XP bar -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between small text-muted mb-1">
-                            <span>XP</span><span>@_champion.XP / @(_champion.Level * 100)</span>
-                        </div>
-                        <div class="progress" style="height:10px">
-                            <div class="progress-bar bg-success" style="width:@XpPercent%"></div>
-                        </div>
-                    </div>
-                    <!-- Stats -->
-                    <div class="row text-center g-2 mt-1">
-                        <div class="col"><div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div></div>
-                        <div class="col"><div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div></div>
-                        <div class="col"><div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div></div>
-                        <div class="col"><div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div></div>
-                        <div class="col"><div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div></div>
-                    </div>
-                    <!-- Personality trait -->
-                    <div class="mt-3">
-                        <span class="badge @TraitBadgeClass me-1">@TraitIcon @_champion.PersonalityTrait</span>
-                    </div>
-                    <!-- Active power-up -->
-                    @if (_champion.PowerUpSlot is not null)
-                    {
-                        <div class="mt-2">
-                            <span class="badge bg-warning text-dark me-1">⚡ @_champion.PowerUpSlot</span>
-                            <span class="badge bg-secondary">@_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") left</span>
-                        </div>
-                    }
-                    <!-- Active debuff -->
-                    @if (_champion.ActiveDebuff != DebuffType.None)
-                    {
-                        <div class="mt-2">
-                            <span class="badge bg-danger text-white me-1">💀 @DebuffLabel (@_champion.ActiveDebuffTicksRemaining tick@(_champion.ActiveDebuffTicksRemaining == 1 ? "" : "s"))</span>
-                        </div>
-                    }
-                    <!-- Biome + region + tick info -->
-                    <div class="mt-2 text-muted small">
-                        Biome: <strong>@_champion.Biome</strong>
-                        &nbsp;|&nbsp;Region: <strong>@_champion.CurrentRegionId</strong>
-                        &nbsp;|&nbsp;Last tick: <strong>@_champion.LastTickAt.ToLocalTime().ToString("g")</strong>
-                    </div>
+                    <span class="gg-bar-val">@_champion.HP / @_champion.MaxHP</span>
                 </div>
+                <!-- XP bar -->
+                <div class="gg-bar-row">
+                    <span class="gg-bar-key">XP</span>
+                    <div class="gg-bar-track">
+                        <div class="gg-bar-fill" style="width:@XpPercent%"></div>
+                    </div>
+                    <span class="gg-bar-val">@_champion.XP / @(_champion.Level * 100)</span>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="gg-stats-grid">
+                    <div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div>
+                    <div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div>
+                    <div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div>
+                    <div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div>
+                    <div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div>
+                </div>
+            </div>
+
+            <div class="gg-profile-footer">
+                <!-- Personality trait -->
+                <div>
+                    <span class="gg-trait-badge @TraitBadgeClass">@_champion.PersonalityTrait</span>
+                </div>
+                <!-- Active power-up -->
+                @if (_champion.PowerUpSlot is not null)
+                {
+                    <div>
+                        <span class="gg-power-badge">
+                            <span class="material-symbols-outlined">bolt</span>
+                            @_champion.PowerUpSlot — @_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") left
+                        </span>
+                    </div>
+                }
+                <!-- Active debuff -->
+                @if (_champion.ActiveDebuff != DebuffType.None)
+                {
+                    <div>
+                        <span class="gg-debuff-badge">@DebuffLabel — @_champion.ActiveDebuffTicksRemaining tick@(_champion.ActiveDebuffTicksRemaining == 1 ? "" : "s")</span>
+                    </div>
+                }
+                <!-- Location info -->
+                <p class="gg-location-line">
+                    Biome: <strong>@_champion.Biome</strong>
+                    &nbsp;&middot;&nbsp;Region: <strong>@_champion.CurrentRegionId</strong>
+                    &nbsp;&middot;&nbsp;Last tick: <strong>@_champion.LastTickAt.ToLocalTime().ToString("g")</strong>
+                </p>
             </div>
         </div>
 
         <!-- Right column -->
-        <div class="col-md-7">
+        <div class="gg-right-col">
 
-            <!-- Intervention panel -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-header fw-bold">Divine Intervention</div>
-                <div class="card-body">
+            <!-- Divine Intervention panel -->
+            <div class="gg-command-panel">
+                <div class="gg-command-panel-header">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    <p class="gg-command-panel-title">Divine Intervention</p>
+                </div>
+                <div class="gg-command-panel-body">
                     @if (_interventionSent)
                     {
-                        <div class="alert alert-success mb-0">
+                        <div class="gg-command-sent">
                             Your command has been received. It will be applied on the next tick.
                         </div>
                     }
                     else
                     {
-                        <p class="text-muted small mb-2">Issue a divine command to aid your champion (one per tick window).</p>
-                        <div class="input-group">
+                        <p class="gg-command-hint">Issue a divine command to aid your champion (one per tick window).</p>
+                        <div class="gg-command-row">
                             <input @bind="_command" @bind:event="oninput"
-                                   class="form-control"
+                                   class="gg-command-input"
                                    placeholder="e.g. blessed blade, heal, divine shield, move to ironveil-pass…"
                                    @onkeydown="HandleCommandKey" />
-                            <button class="btn btn-primary"
+                            <button class="gg-command-btn"
                                     @onclick="SubmitIntervention"
                                     disabled="@(string.IsNullOrWhiteSpace(_command) || _interventionLoading)">
-                                @(_interventionLoading ? "…" : "Issue Command")
+                                @(_interventionLoading ? "…" : "Issue")
                             </button>
                         </div>
                         @if (!string.IsNullOrEmpty(_interventionError))
                         {
-                            <div class="text-danger small mt-1">@_interventionError</div>
+                            <p class="gg-command-error">@_interventionError</p>
                         }
                     }
                 </div>
             </div>
 
-            <!-- Narrative chronicle -->
-            <div class="card shadow-sm">
-                <div class="card-header fw-bold">Chronicle</div>
-                <div class="card-body p-0">
-                    @if (_narratives.Count == 0)
-                    {
-                        <p class="text-muted p-3 mb-0">No entries yet. The first tick will begin your champion's story.</p>
-                    }
-                    else
-                    {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var entry in _narratives)
-                            {
-                                <li class="list-group-item">
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span class="badge bg-light text-dark border">Tick @entry.TickNumber</span>
-                                        <span class="text-muted small">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
-                                    </div>
-                                    <p class="mb-0">@entry.StoryText</p>
-                                </li>
-                            }
-                        </ul>
-                    }
+            <!-- Chronicle panel -->
+            <div class="gg-chronicle-panel">
+                <div class="gg-chronicle-panel-header">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <p class="gg-chronicle-panel-title">Chronicle</p>
                 </div>
+                @if (_narratives.Count == 0)
+                {
+                    <p class="gg-chronicle-empty">No entries yet. The first tick will begin your champion's story.</p>
+                }
+                else
+                {
+                    <ul class="gg-chronicle-list">
+                        @foreach (var entry in _narratives)
+                        {
+                            <li class="gg-chronicle-entry">
+                                <div class="gg-chronicle-meta">
+                                    <span class="gg-chronicle-tick">Tick @entry.TickNumber</span>
+                                    <span class="gg-chronicle-timestamp">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
+                                </div>
+                                <p class="gg-chronicle-text">@entry.StoryText</p>
+                            </li>
+                        }
+                    </ul>
+                }
             </div>
 
         </div>
@@ -164,11 +173,11 @@ else if (_champion is not null)
 
     private string TraitBadgeClass => _champion?.PersonalityTrait switch
     {
-        PersonalityTrait.Brave     => "bg-primary",
-        PersonalityTrait.Cautious  => "bg-success",
-        PersonalityTrait.Reckless  => "bg-danger",
-        PersonalityTrait.Cunning   => "bg-dark",
-        _                          => "bg-secondary"
+        PersonalityTrait.Brave     => "gg-trait-badge--brave",
+        PersonalityTrait.Cautious  => "gg-trait-badge--cautious",
+        PersonalityTrait.Reckless  => "gg-trait-badge--reckless",
+        PersonalityTrait.Cunning   => "gg-trait-badge--cunning",
+        _                          => "gg-trait-badge--default"
     };
 
     private string TraitIcon => _champion?.PersonalityTrait switch

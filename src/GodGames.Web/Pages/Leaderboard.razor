@@ -3,55 +3,70 @@
 
 <PageTitle>Leaderboard — God Games</PageTitle>
 
-<h4 class="mb-4">Champion Leaderboard</h4>
+<h1 class="gg-page-title">Leaderboard</h1>
+<div class="gg-page-title-rule"></div>
 
 @if (_loading)
 {
-    <div class="text-center mt-5">
-        <div class="spinner-border text-primary" role="status"></div>
-        <p class="mt-2 text-muted">Loading rankings…</p>
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Loading rankings…</span>
     </div>
 }
 else if (_entries.Count == 0)
 {
-    <div class="alert alert-secondary">No champions have entered the world yet.</div>
+    <p class="gg-empty-state">No champions have entered the world yet.</p>
 }
 else
 {
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="ps-3">#</th>
-                        <th>Name</th>
-                        <th>Class</th>
-                        <th>Level</th>
-                        <th>XP</th>
-                        <th>Biome</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var entry in _entries)
-                    {
-                        <tr class="@(entry.Rank <= 3 ? "table-warning fw-semibold" : "")">
-                            <td class="ps-3">
-                                @if (entry.Rank == 1) { <span>🥇</span> }
-                                else if (entry.Rank == 2) { <span>🥈</span> }
-                                else if (entry.Rank == 3) { <span>🥉</span> }
-                                else { <span class="text-muted">@entry.Rank</span> }
-                            </td>
-                            <td>@entry.Name</td>
-                            <td><span class="badge @ClassBadge(entry.Class)">@entry.Class</span></td>
-                            <td>@entry.Level</td>
-                            <td>@entry.XP</td>
-                            <td><span class="badge @BiomeBadge(entry.Biome)">@entry.Biome</span></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <table class="gg-lb-table">
+        <thead>
+            <tr>
+                <th style="width:60px;">#</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Level</th>
+                <th>XP</th>
+                <th>Biome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in _entries)
+            {
+                <tr class="@(entry.Rank <= 3 ? "gg-lb-top" : "")">
+                    <td>
+                        @if (entry.Rank == 1)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--gold">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else if (entry.Rank == 2)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--silver">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else if (entry.Rank == 3)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--bronze">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="gg-lb-rank-num" style="color:var(--gg-silver);opacity:0.4;">@entry.Rank</span>
+                        }
+                    </td>
+                    <td class="gg-lb-name">@entry.Name</td>
+                    <td><span class="gg-lb-status">@entry.Class</span></td>
+                    <td style="font-family:'Newsreader',serif;">@entry.Level</td>
+                    <td style="font-family:'Newsreader',serif;">@entry.XP</td>
+                    <td><span class="gg-biome-badge gg-biome-badge--@entry.Biome.ToString().ToLower()">@entry.Biome</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {

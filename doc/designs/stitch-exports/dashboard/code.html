@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#293137",
+              "surface-container": "#1f1f23",
+              "surface-bright": "#39393d",
+              "primary-fixed": "#ffe16d",
+              "on-secondary-container": "#b1b9c0",
+              "on-surface-variant": "#d0c6ab",
+              "error-container": "#93000a",
+              "on-tertiary-fixed-variant": "#5d4200",
+              "surface-container-lowest": "#0e0e12",
+              "on-primary-fixed-variant": "#544600",
+              "inverse-primary": "#705d00",
+              "tertiary-fixed-dim": "#f7bd48",
+              "secondary-fixed": "#dbe4ea",
+              "on-tertiary": "#412d00",
+              "on-primary": "#3a3000",
+              "on-error-container": "#ffdad6",
+              "on-primary-fixed": "#221b00",
+              "on-tertiary-fixed": "#271900",
+              "tertiary-fixed": "#ffdea6",
+              "surface-tint": "#e9c400",
+              "surface": "#131317",
+              "on-secondary-fixed-variant": "#40484d",
+              "surface-dim": "#131317",
+              "on-surface": "#e5e1e7",
+              "inverse-surface": "#e5e1e7",
+              "surface-container-highest": "#353439",
+              "on-primary-container": "#705e00",
+              "tertiary": "#fff5ea",
+              "tertiary-container": "#ffd486",
+              "surface-container-low": "#1b1b1f",
+              "background": "#131317",
+              "primary-fixed-dim": "#e9c400",
+              "primary-container": "#ffd700",
+              "outline": "#999077",
+              "on-secondary-fixed": "#151d22",
+              "on-tertiary-container": "#7c5900",
+              "secondary-container": "#424a50",
+              "primary": "#fff6df",
+              "on-error": "#690005",
+              "inverse-on-surface": "#303034",
+              "secondary": "#bfc8ce",
+              "outline-variant": "#4d4732",
+              "error": "#ffb4ab",
+              "surface-variant": "#353439",
+              "secondary-fixed-dim": "#bfc8ce",
+              "surface-container-high": "#2a292e",
+              "on-background": "#e5e1e7"
+            },
+            fontFamily: {
+              "headline": ["Newsreader"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050508;
+            color: #e5e1e7;
+            font-family: 'Work Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .celestial-bg {
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(255, 246, 223, 0.02) 0%, transparent 30%);
+        }
+        .solar-flare {
+            background: linear-gradient(135deg, #e9c400 0%, #fff6df 100%);
+        }
+        .glass-obsidian {
+            background: rgba(31, 31, 35, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="celestial-bg min-h-screen">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-8 z-50 bg-[#050508] dark:bg-[#050508] bg-gradient-to-r from-[#131317] to-transparent shadow-[40px_0_40px_rgba(255,215,0,0.05)] w-64 border-r-0">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-serif tracking-widest text-[#FFD700] drop-shadow-[0_0_10px_rgba(255,215,0,0.3)] font-['Newsreader'] uppercase">God Games</h1>
+<p class="font-['Newsreader'] font-light tracking-widest text-[#bfc8ce] text-xs mt-1">The Astral Archive</p>
+</div>
+<div class="flex flex-col space-y-2 flex-grow">
+<!-- Dashboard Active -->
+<a class="flex items-center px-8 py-4 space-x-4 text-[#fff6df] border-l-4 border-[#FFD700] bg-white/5 backdrop-blur-md cursor-pointer active:scale-95 ease-in-out transition-all duration-700 font-['Newsreader'] tracking-[0.05em] uppercase" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700 cursor-pointer active:scale-95 ease-in-out font-['Newsreader'] tracking-[0.05em] uppercase" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="text-sm">Chronicle</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700 cursor-pointer active:scale-95 ease-in-out font-['Newsreader'] tracking-[0.05em] uppercase" href="#">
+<span class="material-symbols-outlined" data-icon="public">public</span>
+<span class="text-sm">World Map</span>
+</a>
+<a class="flex items-center px-8 py-4 space-x-4 text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700 cursor-pointer active:scale-95 ease-in-out font-['Newsreader'] tracking-[0.05em] uppercase" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-sm">Leaderboard</span>
+</a>
+</div>
+<div class="px-8 pt-8">
+<button class="w-full solar-flare text-on-primary py-4 font-['Work Sans'] font-semibold tracking-widest uppercase text-xs hover:brightness-110 transition-all active:scale-95">
+                Ascend
+            </button>
+</div>
+</nav>
+<!-- TopAppBar -->
+<header class="flex justify-end items-center px-12 h-20 w-full ml-64 fixed top-0 bg-[#131317]/70 backdrop-blur-xl z-40">
+<div class="flex items-center space-x-8">
+<div class="flex space-x-6 text-[#bfc8ce] font-['Newsreader'] font-light tracking-widest">
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="settings">settings</span>
+</div>
+<div class="flex items-center space-x-4">
+<div class="text-right">
+<p class="text-[#fff6df] font-['Newsreader'] text-sm tracking-widest">Divine Essence</p>
+<p class="text-[#bfc8ce] text-[10px] opacity-60">RANK: SERAPHIM</p>
+</div>
+<img class="w-10 h-10 border border-[#FFD700]/30" data-alt="close-up portrait of a majestic celestial being with shimmering gold skin and ethereal white hair against a dark cosmic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3m_k0s1ajvfCsYATMBuZjZRH0q_Aol4TINDE6hFzXSBdEWJVMe0a2GuKo7ODVKXZsrlZW-xVcJov2PkWFG00KD9g-2hN5p5oXNQuRbv1KfbxzLbiu3U47ChlEodeB5QwCwPbldOuWVMu-l5f0HBVbKuu-BMcjzYQ21pXbyQxrirnY7wqIudGYX3hCop2iO7MS_-YLolKiMsw2B4UoxBmJd5mcZOpfHKbgjMvp10sg7RqM7KL9MZMjm2HE7GahNZ-VTOModeXiU5M"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-20 p-12 min-h-screen grid grid-cols-12 gap-12">
+<!-- LEFT: Champion Profile Column -->
+<section class="col-span-12 lg:col-span-4 space-y-12">
+<!-- Profile Card -->
+<div class="bg-surface-container-low p-8 border border-[#FFD700]/40 relative overflow-hidden">
+<!-- Subtle Lens Flare -->
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-[#FFD700]/5 blur-[60px]"></div>
+<div class="flex flex-col items-center mb-8">
+<div class="w-32 h-48 mb-6 border-2 border-[#FFD700] p-1">
+<img class="w-full h-full object-cover grayscale-[0.2] contrast-125" data-alt="heroic fantasy champion standing tall in ornate golden armor, cinematic lighting, epic low angle shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA-41_myKEVaJWPMHi6Ifp178ZCbm4iR5dpSUlF6K3RW3jBHctlrXLGTAmoQ9-HopLvb50023nkR1gL7iu8FTZtULZxFQNQuEObtKoIQdrw5e7Xp9p5fwEuH316dfkQFyUlpQpfTRIEbNyJAMKH9f4zKuWE5-Sy4EbRa5cPjPzTGQwlOZxKENca7XfUyIYktOzk1J_dxrDGKdjnw9n026a1mcu5SbAUJgUanl66lFb4mxhZ_AE09LGiq7mc_9JrTGvE8zbntXUMjc"/>
+</div>
+<h2 class="font-headline text-3xl tracking-widest text-[#FFD700] mb-1">Aurelius Thorne</h2>
+<p class="font-label text-xs tracking-[0.2em] text-[#bfc8ce] opacity-60 uppercase">The Sun-Bound Vindicator</p>
+</div>
+<!-- Stats Bars -->
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-[10px] tracking-widest uppercase mb-2">
+<span class="text-primary">Vitality (HP)</span>
+<span class="text-primary">2,450 / 2,450</span>
+</div>
+<div class="h-1 bg-surface-container-highest">
+<div class="h-full bg-gradient-to-r from-[#FFD700] to-[#fff6df] shadow-[0_0_15px_rgba(255,215,0,0.5)] w-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] tracking-widest uppercase mb-2">
+<span class="text-secondary">Aether (XP)</span>
+<span class="text-secondary">8,120 / 10,000</span>
+</div>
+<div class="h-1 bg-surface-container-highest">
+<div class="h-full bg-[#bfc8ce] w-[81%] shadow-[0_0_10px_rgba(191,200,206,0.3)]"></div>
+</div>
+</div>
+</div>
+<!-- Stat Boxes -->
+<div class="grid grid-cols-2 gap-4 mt-8">
+<div class="bg-surface-container p-4">
+<p class="text-[9px] text-[#bfc8ce] uppercase tracking-widest mb-1">Might</p>
+<p class="font-headline text-2xl text-primary">84</p>
+</div>
+<div class="bg-surface-container p-4">
+<p class="text-[9px] text-[#bfc8ce] uppercase tracking-widest mb-1">Presence</p>
+<p class="font-headline text-2xl text-primary">126</p>
+</div>
+</div>
+</div>
+<!-- Location Card -->
+<div class="bg-surface-container-low p-0 relative group border border-transparent hover:border-[#FFD700]/20 transition-all duration-700">
+<div class="h-48 overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]" data-alt="ancient temple ruins on a jagged mountain peak, shrouded in golden morning mist, epic scale landscape" data-location="Aetheria Peaks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnOyXIJ0fkEzir-l4trkZoerL1iKuOya3gl_KoBdZms3oDYSLul_FWSHF1n_1D55-AdKNv0MKBM4D2Zd0YxURmnxjAlRIkDhquxpGTulaTLufN7XV7Thcz-piy1a7vUuAuLWGTwPVpxfKiQurCXsWB8AyAbdOOOD5E8YlLqQ7xvxwJIKxT2UmB4_wYWZlnwzYBSBmWHpNgMqUn_UD_JJV-umZb-_X7T_MGo4bEP6XzRvh1S1abZVARSSVMfo3Iqm0w_6D2Nb9kH3Y"/>
+</div>
+<div class="p-6 relative z-20 -mt-12">
+<p class="text-[10px] text-[#FFD700] uppercase tracking-[0.3em] mb-2 font-semibold">Current Domain</p>
+<h3 class="font-headline text-2xl text-primary mb-2">The Whispering spires</h3>
+<div class="flex items-center text-xs text-[#bfc8ce] opacity-70">
+<span class="material-symbols-outlined text-sm mr-2" data-icon="location_on">location_on</span>
+<span>Sector 7-G, Astral Plane</span>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT: Command & Feed Column -->
+<section class="col-span-12 lg:col-span-8 space-y-12">
+<!-- Command Center -->
+<div class="bg-surface-container-low p-8 shadow-[0_0_40px_rgba(255,215,0,0.02)]">
+<h3 class="font-headline text-xl tracking-[0.1em] text-primary mb-6">Issue Divine Command</h3>
+<div class="relative">
+<textarea class="w-full bg-surface-container-lowest border-b border-outline-variant p-6 font-body text-primary focus:outline-none focus:border-primary transition-all duration-500 min-h-[120px] placeholder:text-outline/40" placeholder="Type your will into the stars..."></textarea>
+<div class="absolute bottom-4 right-4 flex space-x-4">
+<button class="material-symbols-outlined text-[#bfc8ce] hover:text-primary transition-colors" data-icon="mic">mic</button>
+<button class="material-symbols-outlined text-[#bfc8ce] hover:text-primary transition-colors" data-icon="attach_file">attach_file</button>
+</div>
+</div>
+<div class="flex flex-wrap gap-3 mt-6">
+<button class="px-6 py-2 bg-surface-container-highest text-[10px] uppercase tracking-widest text-[#bfc8ce] hover:bg-surface-bright transition-colors">Manifest</button>
+<button class="px-6 py-2 bg-surface-container-highest text-[10px] uppercase tracking-widest text-[#bfc8ce] hover:bg-surface-bright transition-colors">Banish</button>
+<button class="px-6 py-2 bg-surface-container-highest text-[10px] uppercase tracking-widest text-[#bfc8ce] hover:bg-surface-bright transition-colors">Bless</button>
+<div class="flex-grow"></div>
+<button class="solar-flare text-on-primary px-8 py-2 text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-transform">Execute Will</button>
+</div>
+</div>
+<!-- Chronicle Feed -->
+<div class="space-y-6">
+<div class="flex justify-between items-end border-b border-outline-variant/20 pb-4">
+<h3 class="font-headline text-2xl tracking-widest text-primary">The Chronicle</h3>
+<span class="text-[10px] tracking-widest text-[#bfc8ce] uppercase opacity-60">Cycle 482 // Recent Logs</span>
+</div>
+<div class="space-y-4 max-h-[800px] overflow-y-auto no-scrollbar pr-2">
+<!-- Entry 1 (Newest) -->
+<div class="bg-surface-container-low p-6 border-l-4 border-[#FFD700] flex gap-6 items-start">
+<div class="bg-[#FFD700]/10 p-3">
+<span class="material-symbols-outlined text-[#FFD700]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-primary tracking-wide">Divine Insight Gained</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">2m ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Aurelius Thorne has meditated at the Altar of Sunfire, gaining a permanent +5 bonus to Presence. The stars whisper of a new path.</p>
+</div>
+</div>
+<!-- Entry 2 (Newest) -->
+<div class="bg-surface-container-low p-6 border-l-4 border-[#FFD700] flex gap-6 items-start">
+<div class="bg-[#FFD700]/10 p-3">
+<span class="material-symbols-outlined text-[#FFD700]" data-icon="swords">swords</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-primary tracking-wide">Skirmish Victory</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">14m ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Defeated a Void Wraith in the Whispering Spires. Loot recovered: 1x Star-Steel Fragment, 400 Aether.</p>
+</div>
+</div>
+<!-- Entry 3 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-90">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="travel_explore">travel_explore</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Domain Shift</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">1h ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Arrived at Sector 7-G. The local essence is turbulent but rich in ancient solar energy.</p>
+</div>
+</div>
+<!-- Entry 4 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-80">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="update">update</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Ascension Progress</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">3h ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Aether stores have reached 80% capacity. The next rank is within reach of your champion's grasp.</p>
+</div>
+</div>
+<!-- Entry 5 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-70">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="forum">forum</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Council Decree</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">5h ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">The Celestial Council has noted your progress in the Outer Rim. Beware of drifting shadows in the coming cycles.</p>
+</div>
+</div>
+<!-- Entry 6 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-60">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="inventory_2">inventory_2</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Provision Replenished</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">8h ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Sun-dried rations and astral waters added to inventory. Vitality recovery rate increased by 5%.</p>
+</div>
+</div>
+<!-- Entry 7 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-50">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Thunderous Omen</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">1d ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">A storm of localized static energy has passed. Equipment durability slightly reduced.</p>
+</div>
+</div>
+<!-- Entry 8 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-40">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="military_tech">military_tech</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Medal of Radiance</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">1d ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Awarded for enduring the Longest Night in the Shadow Plains. Champion morale boosted.</p>
+</div>
+</div>
+<!-- Entry 9 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-30">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="history">history</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Ancestral Echo</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">2d ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">A message from a previous champion was found carved into the Obsidian Cliffs. It offered little comfort.</p>
+</div>
+</div>
+<!-- Entry 10 -->
+<div class="bg-surface-container-low p-6 border-l border-outline-variant/30 flex gap-6 items-start opacity-20">
+<div class="bg-surface-container-highest p-3">
+<span class="material-symbols-outlined text-secondary" data-icon="bedtime">bedtime</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between mb-2">
+<h4 class="font-headline text-lg text-secondary tracking-wide">Rest Cycle Complete</h4>
+<span class="text-[9px] text-[#bfc8ce] opacity-50 uppercase tracking-widest">2d ago</span>
+</div>
+<p class="text-sm text-[#bfc8ce] leading-relaxed">Full rejuvenation achieved. All negative status effects cleared.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

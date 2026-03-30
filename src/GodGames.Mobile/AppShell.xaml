@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="GodGames.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:GodGames.Mobile.Views"
+    Shell.FlyoutBehavior="Disabled">
+
+    <!-- Auth routes (no tab bar) -->
+    <ShellContent
+        Route="login"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Shell.TabBarIsVisible="False" />
+
+    <ShellContent
+        Route="register"
+        ContentTemplate="{DataTemplate views:RegisterPage}"
+        Shell.TabBarIsVisible="False" />
+
+    <ShellContent
+        Route="createchampion"
+        ContentTemplate="{DataTemplate views:CreateChampionPage}"
+        Shell.TabBarIsVisible="False" />
+
+    <!-- Main tab bar (authenticated) -->
+    <TabBar>
+        <ShellContent
+            Title="Dashboard"
+            Route="dashboard"
+            Icon="ic_dashboard.png"
+            ContentTemplate="{DataTemplate views:DashboardPage}" />
+
+        <ShellContent
+            Title="Chronicle"
+            Route="chronicles"
+            Icon="ic_chronicle.png"
+            ContentTemplate="{DataTemplate views:ChroniclesPage}" />
+
+        <ShellContent
+            Title="World"
+            Route="worldmap"
+            Icon="ic_world.png"
+            ContentTemplate="{DataTemplate views:WorldMapPage}" />
+
+        <ShellContent
+            Title="Ranks"
+            Route="leaderboard"
+            Icon="ic_ranks.png"
+            ContentTemplate="{DataTemplate views:LeaderboardPage}" />
+    </TabBar>
+
+</Shell>
