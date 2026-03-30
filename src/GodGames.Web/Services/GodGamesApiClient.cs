@@ -1,0 +1,102 @@
+using System.Net.Http.Json;
+using GodGames.Web.Auth;
+using GodGames.Web.Models;
+
+namespace GodGames.Web.Services;
+
+public class GodGamesApiClient(HttpClient http, GodAuthStateProvider authState)
+{
+    // Auth
+    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+    {
+        var response = await http.PostAsJsonAsync("api/auth/login", request);
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<LoginResponse>()
+            : null;
+    }
+
+    /// Returns null on success, or an error message string on failure.
+    public async Task<string?> RegisterAsync(RegisterRequest request)
+    {
+        var response = await http.PostAsJsonAsync("api/auth/register", request);
+        if (response.IsSuccessStatusCode) return null;
+
+        try
+        {
+            var errors = await response.Content.ReadFromJsonAsync<string[]>();
+            return errors is { Length: > 0 }
+                ? string.Join(" ", errors)
+                : $"Registration failed ({(int)response.StatusCode}).";
+        }
+        catch
+        {
+            return $"Registration failed ({(int)response.StatusCode}). Check the API is running and migrations are applied.";
+        }
+    }
+
+    // Champion
+    public async Task<ChampionDto?> GetMyChampionAsync()
+    {
+        var request = await BuildRequest(HttpMethod.Get, "api/champions/me");
+        var response = await http.SendAsync(request);
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<ChampionDto>()
+            : null;
+    }
+
+    public async Task<ChampionDto?> CreateChampionAsync(CreateChampionRequest body)
+    {
+        var request = await BuildRequest(HttpMethod.Post, "api/champions");
+        request.Content = JsonContent.Create(body);
+        var response = await http.SendAsync(request);
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<ChampionDto>()
+            : null;
+    }
+
+    // Interventions
+    public async Task<bool> SubmitInterventionAsync(SubmitInterventionRequest body)
+    {
+        var request = await BuildRequest(HttpMethod.Post, "api/interventions");
+        request.Content = JsonContent.Create(body);
+        var response = await http.SendAsync(request);
+        return response.IsSuccessStatusCode;
+    }
+
+    // Narratives
+    public async Task<List<NarrativeEntryDto>> GetNarrativesAsync(int count = 10)
+    {
+        var request = await BuildRequest(HttpMethod.Get, $"api/champions/me/narratives?count={count}");
+        var response = await http.SendAsync(request);
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<List<NarrativeEntryDto>>() ?? []
+            : [];
+    }
+
+    // Leaderboard (no auth required)
+    public async Task<List<LeaderboardEntryDto>> GetLeaderboardAsync()
+    {
+        var response = await http.GetAsync("api/champions/leaderboard");
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<List<LeaderboardEntryDto>>() ?? []
+            : [];
+    }
+
+    // World map regions (no auth required)
+    public async Task<List<WorldRegionDto>> GetWorldRegionsAsync()
+    {
+        var response = await http.GetAsync("api/regions");
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<List<WorldRegionDto>>() ?? []
+            : [];
+    }
+
+    private async Task<HttpRequestMessage> BuildRequest(HttpMethod method, string url)
+    {
+        var message = new HttpRequestMessage(method, url);
+        var token = await authState.GetTokenAsync();
+        if (!string.IsNullOrEmpty(token))
+            message.Headers.Authorization = new("Bearer", token);
+        return message;
+    }
+}

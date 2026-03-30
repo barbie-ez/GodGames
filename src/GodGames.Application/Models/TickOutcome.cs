@@ -1,0 +1,12 @@
+using GodGames.Domain.Enums;
+
+namespace GodGames.Application.Models;
+
+public record TickOutcome(
+    Guid ChampionId,
+    int XpGained,
+    int HpDelta,
+    string EventName,
+    string OutcomeDescription,
+    LuckOutcome LuckOutcome = LuckOutcome.NormalTick,
+    bool LeveledUp = false);

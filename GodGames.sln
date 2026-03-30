@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodGames.Tests.Unit", "test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodGames.Tests.Integration", "tests\GodGames.Tests.Integration\GodGames.Tests.Integration.csproj", "{8999D791-0697-4F6E-8D86-560E98D92F15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodGames.Mobile", "src\GodGames.Mobile\GodGames.Mobile.csproj", "{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +145,18 @@ Global
 		{8999D791-0697-4F6E-8D86-560E98D92F15}.Release|x64.Build.0 = Release|Any CPU
 		{8999D791-0697-4F6E-8D86-560E98D92F15}.Release|x86.ActiveCfg = Release|Any CPU
 		{8999D791-0697-4F6E-8D86-560E98D92F15}.Release|x86.Build.0 = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Debug|x86.Build.0 = Debug|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|x64.Build.0 = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,5 +171,6 @@ Global
 		{9DF2121C-2DE0-48DB-9A04-5AD12BEC5966} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{53581C87-6257-4584-8240-CD1926267FD7} = {C1234567-89AB-CDEF-0123-456789ABCDEF}
 		{8999D791-0697-4F6E-8D86-560E98D92F15} = {C1234567-89AB-CDEF-0123-456789ABCDEF}
+		{F877D4E0-6F9B-4528-8DE2-DB88DF6C14F6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

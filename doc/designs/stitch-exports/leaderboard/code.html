@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#293137",
+              "surface-container": "#1f1f23",
+              "surface-bright": "#39393d",
+              "primary-fixed": "#ffe16d",
+              "on-secondary-container": "#b1b9c0",
+              "on-surface-variant": "#d0c6ab",
+              "error-container": "#93000a",
+              "on-tertiary-fixed-variant": "#5d4200",
+              "surface-container-lowest": "#0e0e12",
+              "on-primary-fixed-variant": "#544600",
+              "inverse-primary": "#705d00",
+              "tertiary-fixed-dim": "#f7bd48",
+              "secondary-fixed": "#dbe4ea",
+              "on-tertiary": "#412d00",
+              "on-primary": "#3a3000",
+              "on-error-container": "#ffdad6",
+              "on-primary-fixed": "#221b00",
+              "on-tertiary-fixed": "#271900",
+              "tertiary-fixed": "#ffdea6",
+              "surface-tint": "#e9c400",
+              "surface": "#131317",
+              "on-secondary-fixed-variant": "#40484d",
+              "surface-dim": "#131317",
+              "on-surface": "#e5e1e7",
+              "inverse-surface": "#e5e1e7",
+              "surface-container-highest": "#353439",
+              "on-primary-container": "#705e00",
+              "tertiary": "#fff5ea",
+              "tertiary-container": "#ffd486",
+              "surface-container-low": "#1b1b1f",
+              "background": "#131317",
+              "primary-fixed-dim": "#e9c400",
+              "primary-container": "#ffd700",
+              "outline": "#999077",
+              "on-secondary-fixed": "#151d22",
+              "on-tertiary-container": "#7c5900",
+              "secondary-container": "#424a50",
+              "primary": "#fff6df",
+              "on-error": "#690005",
+              "inverse-on-surface": "#303034",
+              "secondary": "#bfc8ce",
+              "outline-variant": "#4d4732",
+              "error": "#ffb4ab",
+              "surface-variant": "#353439",
+              "secondary-fixed-dim": "#bfc8ce",
+              "surface-container-high": "#2a292e",
+              "on-background": "#e5e1e7"
+            },
+            fontFamily: {
+              "headline": ["Newsreader"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #050508; color: #e5e1e7; font-family: 'Work Sans', sans-serif; }
+        .serif-headline { font-family: 'Newsreader', serif; }
+        .glass-nav { backdrop-filter: blur(20px); }
+        .solar-flare { background: linear-gradient(135deg, #e9c400 0%, #fff6df 100%); }
+        .gold-glow { box-shadow: 0 0 40px 0px rgba(255, 215, 0, 0.05); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .medal-fill { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-[#050508]">
+<!-- SideNavBar Shell -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-8 z-50 w-64 bg-gradient-to-r from-[#131317] to-transparent shadow-[40px_0_40px_rgba(255,215,0,0.05)]">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-serif tracking-widest text-[#FFD700] drop-shadow-[0_0_10px_rgba(255,215,0,0.3)] uppercase">God Games</h1>
+<p class="font-['Newsreader'] tracking-[0.05em] uppercase text-xs text-[#bfc8ce] opacity-70">The Astral Archive</p>
+</div>
+<div class="flex-1 space-y-2">
+<div class="group flex items-center px-8 py-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700">
+<span class="material-symbols-outlined mr-4" data-icon="dashboard">dashboard</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Dashboard</span>
+</div>
+<div class="group flex items-center px-8 py-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700">
+<span class="material-symbols-outlined mr-4" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Chronicle</span>
+</div>
+<div class="group flex items-center px-8 py-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 hover:bg-[#1b1b1f] hover:text-[#FFD700] transition-all duration-700">
+<span class="material-symbols-outlined mr-4" data-icon="public">public</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">World Map</span>
+</div>
+<div class="group flex items-center px-8 py-4 cursor-pointer active:scale-95 ease-in-out text-[#fff6df] border-l-4 border-[#FFD700] bg-white/5 backdrop-blur-md transition-all duration-700">
+<span class="material-symbols-outlined mr-4" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Leaderboard</span>
+</div>
+</div>
+<div class="px-8 pt-8">
+<button class="w-full py-3 solar-flare text-[#3a3000] font-bold tracking-widest uppercase text-xs active:scale-95 transition-transform">
+                Ascend
+            </button>
+</div>
+</nav>
+<!-- TopAppBar Shell -->
+<header class="flex justify-end items-center px-12 h-20 w-full fixed top-0 left-0 bg-[#131317]/70 backdrop-blur-xl z-40">
+<div class="flex items-center space-x-8">
+<div class="flex space-x-6 text-[#bfc8ce]">
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="settings">settings</span>
+</div>
+<div class="flex items-center space-x-4 ml-4">
+<div class="text-right">
+<p class="font-['Newsreader'] font-light tracking-widest text-[#FFD700] text-sm">Divine Essence</p>
+<p class="text-[10px] text-[#bfc8ce] uppercase tracking-tighter">Level 99 Architect</p>
+</div>
+<div class="w-10 h-10 bg-surface-container-high border-none overflow-hidden">
+<img alt="Deity Avatar" class="w-full h-full object-cover grayscale contrast-125" data-alt="close-up portrait of a marble statue with golden cracks across its face glowing softly in a dark void" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8QggtTS-0ZlOU28zyOuMY0Fjv2a1pWokXsGBFhlSeDMeC-21O2GapYKwjAHBlFZhXswVuCo6NxEo6RcIG1SJqa1oBOwuNCAf1vAn3qLwyYM2OgBS-r475LX9F27-NnyQdlENe3gkViFvwcl5l3oLV62VXROkMuhT388PqISWikW4a-IgHkW3jxmyb82IfqBMTvquzLcQb8Yr-U_qB5itrPo6rSAkUoNjyUZ08VDa0V2KznL2AzWwNrYRszP_wXDKOPpPNcYR3wW4"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-32 px-12 pb-20 max-w-7xl mx-auto">
+<!-- Header Section -->
+<section class="mb-20 flex justify-between items-end">
+<div class="max-w-2xl">
+<h2 class="serif-headline text-6xl font-light tracking-widest text-primary leading-tight mb-6">
+                    The Pantheon <br/> Rankings
+                </h2>
+<p class="text-secondary font-body tracking-wide leading-relaxed max-w-lg">
+                    Witness the convergence of divine manifestations. Only those whose legacy illuminates the astral archive are etched into these obsidian monoliths.
+                </p>
+</div>
+<div class="text-right">
+<span class="text-[10px] tracking-[0.3em] uppercase text-primary-container block mb-2">Cycle Ends In</span>
+<span class="serif-headline text-3xl text-primary">04:12:55:08</span>
+</div>
+</section>
+<!-- Leaderboard Table -->
+<div class="relative">
+<!-- Decorative Accent -->
+<div class="absolute -top-10 -right-10 w-64 h-64 bg-primary-container opacity-[0.03] blur-[100px] pointer-events-none"></div>
+<div class="overflow-hidden bg-surface-container-low gold-glow">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-none">
+<th class="py-6 px-8 serif-headline text-primary-container font-medium tracking-widest uppercase text-xs">Rank</th>
+<th class="py-6 px-8 serif-headline text-primary-container font-medium tracking-widest uppercase text-xs">Deity</th>
+<th class="py-6 px-8 serif-headline text-primary-container font-medium tracking-widest uppercase text-xs text-right">Essence Velocity</th>
+<th class="py-6 px-8 serif-headline text-primary-container font-medium tracking-widest uppercase text-xs text-right">Chronicle Score</th>
+<th class="py-6 px-8 serif-headline text-primary-container font-medium tracking-widest uppercase text-xs text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Rank 1 -->
+<tr class="bg-primary-container/[0.04] transition-colors duration-500 hover:bg-primary-container/[0.08]">
+<td class="py-8 px-8">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#FFD700] medal-fill text-3xl" data-icon="military_tech">military_tech</span>
+<span class="serif-headline text-2xl text-primary">01</span>
+</div>
+</td>
+<td class="py-8 px-8">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center">
+<img alt="User" class="w-full h-full object-cover opacity-80 grayscale" data-alt="abstract cosmic entity formed from golden light and swirling dark nebula particles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEBNcXPlaFb412UZCqoQvRbUvKnX43cDkI-d7G2MGbFKFmoMOsBRm2LD9jV34xkgf5JdaY8gfmxxw0nlbsyTMsqS1OQ3nYgTDKXv4_OZF6Ru-yaE7cgsOyGR7usG-5WyVXZclf5geQ56b1Wy4zR1YNTuPhyQFiBhmUXhu_v8LvgXBm8P57YmIm9nlRI1zh4Wcqmy3u4P4EVYqMG2ulXMj4qR5KLZf6esSeJKvrYevB8V5UIDgrMtHhltTXqYig3__Plg9gOjqkhV4"/>
+</div>
+<div>
+<p class="serif-headline text-lg text-primary tracking-wide">Aurelius Sol</p>
+<p class="text-[10px] text-secondary uppercase tracking-widest">Master of the First Dawn</p>
+</div>
+</div>
+</td>
+<td class="py-8 px-8 text-right serif-headline text-primary text-xl">12,854.90</td>
+<td class="py-8 px-8 text-right text-secondary font-body tabular-nums">1,004,220</td>
+<td class="py-8 px-8 text-center">
+<span class="text-[10px] py-1 px-3 border border-primary-container/30 text-primary-container tracking-widest uppercase">Ascended</span>
+</td>
+</tr>
+<!-- Rank 2 -->
+<tr class="bg-secondary/[0.02] transition-colors duration-500 hover:bg-secondary/[0.05]">
+<td class="py-8 px-8">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#bfc8ce] medal-fill text-3xl" data-icon="military_tech">military_tech</span>
+<span class="serif-headline text-2xl text-primary">02</span>
+</div>
+</td>
+<td class="py-8 px-8">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center">
+<img alt="User" class="w-full h-full object-cover opacity-80 grayscale" data-alt="shimmering satellite view of a crystal planet reflecting cold silver starlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7BD9qkOMF8WfBcmFSkjPImZ1ei7QASyekKpAnEKZOe0ZmDT5GaBTHDvem2fnimO5bcHjCrB67dKBL6s2dhNZvy0FnyK--yfMHRT6qpnIkcVtIeRmQOeMJbvC48XNa2i3NNjUG7pZGDScEykMA1tuRxxKLQgdftDt5evjgPEh-2XPqeakFDbfT32QMRVyJoDJwYRefNKFWT_om_OYWsr8lOiM15iQaslZ2ftO7XGdE_uMdUQNPWKXTv5ij4LXGZNX0TLqObIZ9kAQ"/>
+</div>
+<div>
+<p class="serif-headline text-lg text-primary tracking-wide">Lunar Weaver</p>
+<p class="text-[10px] text-secondary uppercase tracking-widest">Silent Architect</p>
+</div>
+</div>
+</td>
+<td class="py-8 px-8 text-right serif-headline text-primary text-xl">11,440.12</td>
+<td class="py-8 px-8 text-right text-secondary font-body tabular-nums">982,500</td>
+<td class="py-8 px-8 text-center">
+<span class="text-[10px] py-1 px-3 border border-outline-variant/30 text-secondary tracking-widest uppercase">Resonating</span>
+</td>
+</tr>
+<!-- Rank 3 -->
+<tr class="bg-[#cd7f32]/[0.02] transition-colors duration-500 hover:bg-[#cd7f32]/[0.05]">
+<td class="py-8 px-8">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[#cd7f32] medal-fill text-3xl" data-icon="military_tech">military_tech</span>
+<span class="serif-headline text-2xl text-primary">03</span>
+</div>
+</td>
+<td class="py-8 px-8">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center">
+<img alt="User" class="w-full h-full object-cover opacity-80 grayscale" data-alt="deep space nebula with bronze and orange gas clouds swirling around a core of light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDreHgZFKWRJc7ZfvIT2SR84QwJVIvv_ckT1rajkfn0JkEgMN4bJG52u4dj2hM620cCCGt06bLHCdUECGwIFBQmwVceFIWYWCURl6bhcTBNZZiwKKlf_2drSXERMf7gHcvHpgUkIOmJ40gtK2N5w_faIPRFTbRveTmD6kIJllxaC90uj5-KTAOaNu0InZvxWu_7lSOna9D4ok8RycKHBIlb_euvjGlLuEmzDb0mVOmNYTlOWH8kVLq42Faerox36x9QOxI7dkyG3yk"/>
+</div>
+<div>
+<p class="serif-headline text-lg text-primary tracking-wide">Cinder Warden</p>
+<p class="text-[10px] text-secondary uppercase tracking-widest">Keeper of the Embers</p>
+</div>
+</div>
+</td>
+<td class="py-8 px-8 text-right serif-headline text-primary text-xl">10,992.05</td>
+<td class="py-8 px-8 text-right text-secondary font-body tabular-nums">915,000</td>
+<td class="py-8 px-8 text-center">
+<span class="text-[10px] py-1 px-3 border border-outline-variant/30 text-secondary tracking-widest uppercase">Resonating</span>
+</td>
+</tr>
+<!-- Rank 4 -->
+<tr class="transition-colors duration-500 hover:bg-surface-container-high">
+<td class="py-8 px-8">
+<div class="flex items-center space-x-3 pl-2">
+<span class="serif-headline text-2xl text-secondary opacity-50">04</span>
+</div>
+</td>
+<td class="py-8 px-8">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center">
+<img alt="User" class="w-full h-full object-cover opacity-50 grayscale" data-alt="distant forest silhouettes under a star-filled sky in deep monochrome blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb62khgatbwGtNWVIfRDwlY5hDtfCByslThSwsk1KNss-FcXvmL0RH3MGU7jEjdSm_1iz5SGRMA9jvywFKht3ItlgqUDqm0MrVuT8JHdtXLgUWSIJjUHecCwXjIyOpNZQxtRofoWQMdNlsGSKgjCv01LDz2gFhlf_iLcMeC4Bl5Puyh-qjoZwpq6G-mlM21daeOtN91FdfDaNOZ4g_mp-Io7kVC16Ycd1z6L_4jut_G6kf_I0F8E_YA8_fTkh3ikm2nDc6x-56vzw"/>
+</div>
+<div>
+<p class="serif-headline text-lg text-secondary tracking-wide">Ether Void</p>
+<p class="text-[10px] text-secondary opacity-60 uppercase tracking-widest">Spectral Entity</p>
+</div>
+</div>
+</td>
+<td class="py-8 px-8 text-right serif-headline text-secondary text-xl">9,421.33</td>
+<td class="py-8 px-8 text-right text-secondary opacity-60 font-body tabular-nums">842,100</td>
+<td class="py-8 px-8 text-center">
+<span class="text-[10px] py-1 px-3 border border-outline-variant/10 text-secondary opacity-40 tracking-widest uppercase">Dormant</span>
+</td>
+</tr>
+<!-- Rank 5 -->
+<tr class="transition-colors duration-500 hover:bg-surface-container-high">
+<td class="py-8 px-8">
+<div class="flex items-center space-x-3 pl-2">
+<span class="serif-headline text-2xl text-secondary opacity-50">05</span>
+</div>
+</td>
+<td class="py-8 px-8">
+<div class="flex items-center space-x-4">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center">
+<img alt="User" class="w-full h-full object-cover opacity-50 grayscale" data-alt="infinite black space with a single bright white star in the center of the frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlLgFYluYrrSE6gBWd4AEI_hj5REuVPFiJkkJ6T29NbD6aM57v7CwB6HujJkvZLosYQxfk6SDPsQMDAGTVrZfemm1vkVpPD--te0vzRIqP1W5yeN8X6bLT4zk8CKUHVfJ9okUYEP53W8oxBKr3NutAQB2xsptTeDcp0gJpHCP0wUkX8WV-bEgO9arYEei9LslxwWJldBtObZRaBqfUtMeqky7y6btBe1jNvJgWCjze3PKTQOREtYCpyH0_7scox51_Ewup999TitM"/>
+</div>
+<div>
+<p class="serif-headline text-lg text-secondary tracking-wide">Nova Prime</p>
+<p class="text-[10px] text-secondary opacity-60 uppercase tracking-widest">Collapsing Star</p>
+</div>
+</div>
+</td>
+<td class="py-8 px-8 text-right serif-headline text-secondary text-xl">8,881.00</td>
+<td class="py-8 px-8 text-right text-secondary opacity-60 font-body tabular-nums">790,440</td>
+<td class="py-8 px-8 text-center">
+<span class="text-[10px] py-1 px-3 border border-outline-variant/10 text-secondary opacity-40 tracking-widest uppercase">Dormant</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="mt-12 flex justify-between items-center px-4">
+<p class="text-xs text-secondary opacity-50 uppercase tracking-[0.2em]">Viewing the Upper Echelons (1-5 of 1,000)</p>
+<div class="flex items-center space-x-12">
+<button class="group flex items-center space-x-2 text-primary opacity-60 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+<span class="text-[10px] uppercase tracking-widest">Previous Era</span>
+</button>
+<button class="group flex items-center space-x-2 text-primary opacity-60 hover:opacity-100 transition-opacity">
+<span class="text-[10px] uppercase tracking-widest">Next Era</span>
+<span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Featured Accomplishment - Asymmetric Layout -->
+<section class="mt-32 grid grid-cols-12 gap-8 items-center">
+<div class="col-span-7 relative h-[450px] bg-surface-container overflow-hidden">
+<img alt="Celestial Event" class="w-full h-full object-cover mix-blend-screen opacity-40" data-alt="a majestic spiral galaxy with brilliant gold and white stars spinning in a deep purple and black cosmic void" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4dqDRoFpM0slr4TOdTYTQJzBbm3un8OPqN2uQnVDjBOVgS_CTP6EIRENN2ktrjivfw_xhs-aX8xZeT7cV6KT70khBCVlrt8SCEZ_eQIxC7l_0BeAgedG8JEQHl5BTJfjy4hEh5TLyulKuSsx2Z-1RrG_FHFaHpbNCojmnDxdPBoGNpErDiltvGkxMrFd7uKwBHdhjM8Qn6ucSKCouaPqygOFHNAHj7eKrsaeuqLvIsVxfS8wfLNdC4-QqMNCOxpq1s3WXdLaYK7A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent"></div>
+<div class="absolute bottom-10 left-10">
+<span class="text-[10px] tracking-[0.5em] uppercase text-primary-container block mb-4">Ascension Highlight</span>
+<h3 class="serif-headline text-4xl text-primary max-w-sm">The Great Alignment of Year 2024</h3>
+</div>
+</div>
+<div class="col-span-5 pl-12">
+<div class="space-y-8">
+<div class="border-l border-primary-container/20 pl-6">
+<p class="serif-headline text-2xl text-primary mb-2">Record Essence Peak</p>
+<p class="text-secondary text-sm leading-relaxed">Aurelius Sol reached a peak velocity of 15.4k during the solar eclipse, setting a new archival record.</p>
+</div>
+<div class="border-l border-outline-variant/20 pl-6">
+<p class="serif-headline text-2xl text-primary mb-2">Pantheon Shift</p>
+<p class="text-secondary text-sm leading-relaxed">Lunar Weaver has climbed 12 positions in the last 48 cycles, threatening the top seat for the first time in millennia.</p>
+</div>
+<button class="mt-4 px-8 py-4 border border-outline-variant/30 text-primary-container text-[10px] uppercase tracking-[0.3em] hover:bg-primary-container hover:text-on-primary transition-all duration-500">
+                        View Detailed History
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Decorative Fog -->
+<div class="fixed bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#050508] to-transparent pointer-events-none z-30"></div>
+</body></html>

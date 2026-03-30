@@ -1,7 +1,264 @@
-﻿@page "/"
+@page "/"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+@inject GodGames.Web.Auth.GodAuthStateProvider AuthState
+@inject NavigationManager Nav
+@inject IConfiguration Config
+@implements IAsyncDisposable
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard — God Games</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (_loading)
+{
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Consulting the heavens…</span>
+    </div>
+}
+else if (_champion is not null)
+{
+    <div class="gg-dashboard">
 
-Welcome to your new app.
+        <!-- Champion card (left column) -->
+        <div class="gg-profile-card">
+            <div class="gg-profile-header">
+                <div>
+                    <p class="gg-champion-name">@_champion.Name</p>
+                </div>
+                <span class="gg-level-badge">Lv. @_champion.Level — @_champion.Class</span>
+            </div>
+
+            <div class="gg-profile-body">
+                <!-- HP bar -->
+                <div class="gg-bar-row">
+                    <span class="gg-bar-key">HP</span>
+                    <div class="gg-bar-track">
+                        <div class="gg-bar-fill gg-bar-fill--hp" style="width:@HpPercent%"></div>
+                    </div>
+                    <span class="gg-bar-val">@_champion.HP / @_champion.MaxHP</span>
+                </div>
+                <!-- XP bar -->
+                <div class="gg-bar-row">
+                    <span class="gg-bar-key">XP</span>
+                    <div class="gg-bar-track">
+                        <div class="gg-bar-fill" style="width:@XpPercent%"></div>
+                    </div>
+                    <span class="gg-bar-val">@_champion.XP / @(_champion.Level * 100)</span>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="gg-stats-grid">
+                    <div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div>
+                    <div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div>
+                    <div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div>
+                    <div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div>
+                    <div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div>
+                </div>
+            </div>
+
+            <div class="gg-profile-footer">
+                <!-- Personality trait -->
+                <div>
+                    <span class="gg-trait-badge @TraitBadgeClass">@_champion.PersonalityTrait</span>
+                </div>
+                <!-- Active power-up -->
+                @if (_champion.PowerUpSlot is not null)
+                {
+                    <div>
+                        <span class="gg-power-badge">
+                            <span class="material-symbols-outlined">bolt</span>
+                            @_champion.PowerUpSlot — @_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") left
+                        </span>
+                    </div>
+                }
+                <!-- Active debuff -->
+                @if (_champion.ActiveDebuff != DebuffType.None)
+                {
+                    <div>
+                        <span class="gg-debuff-badge">@DebuffLabel — @_champion.ActiveDebuffTicksRemaining tick@(_champion.ActiveDebuffTicksRemaining == 1 ? "" : "s")</span>
+                    </div>
+                }
+                <!-- Location info -->
+                <p class="gg-location-line">
+                    Biome: <strong>@_champion.Biome</strong>
+                    &nbsp;&middot;&nbsp;Region: <strong>@_champion.CurrentRegionId</strong>
+                    &nbsp;&middot;&nbsp;Last tick: <strong>@_champion.LastTickAt.ToLocalTime().ToString("g")</strong>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="gg-right-col">
+
+            <!-- Divine Intervention panel -->
+            <div class="gg-command-panel">
+                <div class="gg-command-panel-header">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    <p class="gg-command-panel-title">Divine Intervention</p>
+                </div>
+                <div class="gg-command-panel-body">
+                    @if (_interventionSent)
+                    {
+                        <div class="gg-command-sent">
+                            Your command has been received. It will be applied on the next tick.
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="gg-command-hint">Issue a divine command to aid your champion (one per tick window).</p>
+                        <div class="gg-command-row">
+                            <input @bind="_command" @bind:event="oninput"
+                                   class="gg-command-input"
+                                   placeholder="e.g. blessed blade, heal, divine shield, move to ironveil-pass…"
+                                   @onkeydown="HandleCommandKey" />
+                            <button class="gg-command-btn"
+                                    @onclick="SubmitIntervention"
+                                    disabled="@(string.IsNullOrWhiteSpace(_command) || _interventionLoading)">
+                                @(_interventionLoading ? "…" : "Issue")
+                            </button>
+                        </div>
+                        @if (!string.IsNullOrEmpty(_interventionError))
+                        {
+                            <p class="gg-command-error">@_interventionError</p>
+                        }
+                    }
+                </div>
+            </div>
+
+            <!-- Chronicle panel -->
+            <div class="gg-chronicle-panel">
+                <div class="gg-chronicle-panel-header">
+                    <span class="material-symbols-outlined">auto_stories</span>
+                    <p class="gg-chronicle-panel-title">Chronicle</p>
+                </div>
+                @if (_narratives.Count == 0)
+                {
+                    <p class="gg-chronicle-empty">No entries yet. The first tick will begin your champion's story.</p>
+                }
+                else
+                {
+                    <ul class="gg-chronicle-list">
+                        @foreach (var entry in _narratives)
+                        {
+                            <li class="gg-chronicle-entry">
+                                <div class="gg-chronicle-meta">
+                                    <span class="gg-chronicle-tick">Tick @entry.TickNumber</span>
+                                    <span class="gg-chronicle-timestamp">@entry.CreatedAt.ToLocalTime().ToString("g")</span>
+                                </div>
+                                <p class="gg-chronicle-text">@entry.StoryText</p>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+    private ChampionDto? _champion;
+    private List<NarrativeEntryDto> _narratives = [];
+    private bool _loading = true;
+    private string _command = "";
+    private bool _interventionLoading;
+    private bool _interventionSent;
+    private string? _interventionError;
+    private HubConnection? _hub;
+
+    private double HpPercent => _champion is null ? 0
+        : Math.Round((double)_champion.HP / _champion.MaxHP * 100, 1);
+    private double XpPercent => _champion is null ? 0
+        : Math.Round((double)_champion.XP / (_champion.Level * 100) * 100, 1);
+
+    private string TraitBadgeClass => _champion?.PersonalityTrait switch
+    {
+        PersonalityTrait.Brave     => "gg-trait-badge--brave",
+        PersonalityTrait.Cautious  => "gg-trait-badge--cautious",
+        PersonalityTrait.Reckless  => "gg-trait-badge--reckless",
+        PersonalityTrait.Cunning   => "gg-trait-badge--cunning",
+        _                          => "gg-trait-badge--default"
+    };
+
+    private string TraitIcon => _champion?.PersonalityTrait switch
+    {
+        PersonalityTrait.Brave    => "⚔",
+        PersonalityTrait.Cautious => "🛡",
+        PersonalityTrait.Reckless => "🔥",
+        PersonalityTrait.Cunning  => "👁",
+        _                         => ""
+    };
+
+    private string DebuffLabel => _champion?.ActiveDebuff switch
+    {
+        DebuffType.StatReduction  => "Weakened",
+        DebuffType.WeakenedStrike => "Weakened Strike",
+        DebuffType.CursedBlood    => "Cursed Blood",
+        _                         => ""
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _champion = await Api.GetMyChampionAsync();
+
+        if (_champion is null)
+        {
+            Nav.NavigateTo("/champion/create");
+            return;
+        }
+
+        _narratives = await Api.GetNarrativesAsync();
+        _loading = false;
+
+        await StartSignalRAsync();
+    }
+
+    private async Task StartSignalRAsync()
+    {
+        var apiBase = Config["ApiBaseUrl"] ?? "https://localhost:7012";
+        var token = await AuthState.GetTokenAsync();
+
+        _hub = new HubConnectionBuilder()
+            .WithUrl($"{apiBase}/hubs/game", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(token);
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hub.On<ChampionDto>("ChampionUpdated", async updated =>
+        {
+            _champion = updated;
+            _narratives = await Api.GetNarrativesAsync();
+            _interventionSent = false;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        try { await _hub.StartAsync(); }
+        catch { /* non-fatal — dashboard works without live push */ }
+    }
+
+    private async Task SubmitIntervention()
+    {
+        if (string.IsNullOrWhiteSpace(_command) || _champion is null) return;
+        _interventionLoading = true;
+        _interventionError = null;
+
+        var ok = await Api.SubmitInterventionAsync(new SubmitInterventionRequest(_champion.Id, _command));
+        _interventionLoading = false;
+
+        if (ok) { _interventionSent = true; _command = ""; }
+        else _interventionError = "Command failed. You may already have a pending intervention this tick.";
+    }
+
+    private async Task HandleCommandKey(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await SubmitIntervention();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hub is not null)
+            await _hub.DisposeAsync();
+    }
+}

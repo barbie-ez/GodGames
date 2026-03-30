@@ -1,0 +1,123 @@
+@page "/champion/history"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+@inject NavigationManager Nav
+
+<PageTitle>Chronicle — God Games</PageTitle>
+
+@if (_loading)
+{
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Loading chronicles…</span>
+    </div>
+}
+else if (_champion is null)
+{
+    <p class="gg-empty-state">No champion found.</p>
+}
+else
+{
+    <!-- Page heading -->
+    <h1 class="gg-page-title">@_champion.Name</h1>
+    <div class="gg-page-title-rule"></div>
+
+    <!-- Stat strip -->
+    <div class="gg-stat-strip">
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Level</span>
+            <span class="gg-stat-strip-val">@_champion.Level</span>
+        </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">XP</span>
+            <span class="gg-stat-strip-val">@_champion.XP</span>
+        </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">HP</span>
+            <span class="gg-stat-strip-val">@_champion.HP<span class="gg-stat-strip-unit">/ @_champion.MaxHP</span></span>
+        </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Class</span>
+            <span class="gg-stat-strip-val" style="font-size:1.1rem">@_champion.Class</span>
+        </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Biome</span>
+            <span class="gg-stat-strip-val" style="font-size:1.1rem">@_champion.Biome</span>
+        </div>
+        <div class="gg-stat-strip-cell">
+            <span class="gg-stat-strip-label">Entries</span>
+            <span class="gg-stat-strip-val">@_narratives.Count</span>
+        </div>
+    </div>
+
+    <!-- Active power-up alert -->
+    @if (_champion.PowerUpSlot is not null)
+    {
+        <div class="gg-power-badge" style="margin-bottom:2rem;display:inline-flex;">
+            <span class="material-symbols-outlined">bolt</span>
+            Active power-up: <strong style="margin-left:0.25rem">@_champion.PowerUpSlot</strong>
+            &nbsp;&mdash;&nbsp;@_champion.PowerUpTicksRemaining tick@(_champion.PowerUpTicksRemaining == 1 ? "" : "s") remaining
+        </div>
+    }
+
+    <!-- Stat grid -->
+    <div class="gg-stats-grid" style="margin-bottom:3rem;border-top:none;">
+        <div class="stat-box"><div class="stat-label">STR</div><div class="stat-val">@_champion.STR</div></div>
+        <div class="stat-box"><div class="stat-label">DEX</div><div class="stat-val">@_champion.DEX</div></div>
+        <div class="stat-box"><div class="stat-label">INT</div><div class="stat-val">@_champion.INT</div></div>
+        <div class="stat-box"><div class="stat-label">WIS</div><div class="stat-val">@_champion.WIS</div></div>
+        <div class="stat-box"><div class="stat-label">VIT</div><div class="stat-val">@_champion.VIT</div></div>
+    </div>
+
+    <!-- Timeline -->
+    @if (_narratives.Count == 0)
+    {
+        <p class="gg-empty-state">No entries yet. The first tick will begin your champion's story.</p>
+    }
+    else
+    {
+        <div class="gg-timeline">
+            @foreach (var entry in _narratives)
+            {
+                <div class="gg-timeline-entry">
+                    <div class="gg-timeline-col">
+                        <span class="material-symbols-outlined">auto_stories</span>
+                        <div class="gg-timeline-line"></div>
+                    </div>
+                    <div class="gg-timeline-content">
+                        <div class="gg-timeline-header">
+                            <span class="gg-timeline-tick">Tick @entry.TickNumber</span>
+                            <span class="gg-timeline-heading" style="font-size:0.75rem;color:var(--gg-silver);opacity:0.35;">
+                                @entry.CreatedAt.ToLocalTime().ToString("g")
+                            </span>
+                        </div>
+                        <p class="gg-timeline-text">@entry.StoryText</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+<!-- FAB back button -->
+<a href="/" class="gg-fab" title="Back to Dashboard">
+    <span class="material-symbols-outlined">arrow_back</span>
+</a>
+
+@code {
+    private ChampionDto? _champion;
+    private List<NarrativeEntryDto> _narratives = [];
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _champion = await Api.GetMyChampionAsync();
+        if (_champion is null)
+        {
+            Nav.NavigateTo("/champion/create");
+            return;
+        }
+        _narratives = await Api.GetNarrativesAsync(count: 50);
+        _loading = false;
+    }
+}

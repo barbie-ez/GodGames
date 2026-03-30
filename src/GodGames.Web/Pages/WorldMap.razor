@@ -1,0 +1,201 @@
+@page "/world-map"
+@attribute [Authorize]
+@inject GodGamesApiClient Api
+
+<PageTitle>World Map — God Games</PageTitle>
+
+@if (_loading)
+{
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Charting the realm…</span>
+    </div>
+}
+else
+{
+    <div class="gg-map-layout">
+
+        <!-- SVG map canvas -->
+        <div class="gg-map-canvas">
+            <svg viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg"
+                 style="width:100%;height:100%">
+
+                <!-- Static zone labels and dividers -->
+                @((MarkupString)@"
+                <text x='200' y='22' text-anchor='middle' fill='#ffb4ab' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>DANGEROUS</text>
+                <text x='200' y='222' text-anchor='middle' fill='#ffd700' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>NORMAL</text>
+                <text x='200' y='422' text-anchor='middle' fill='#6bcb77' font-size='11' font-weight='500' font-family='Work Sans, sans-serif' letter-spacing='0.15em'>SAFE</text>
+                <line x1='20' y1='210' x2='380' y2='210' stroke='rgba(77,71,50,0.3)' stroke-width='1' stroke-dasharray='6,4'/>
+                <line x1='20' y1='400' x2='380' y2='400' stroke='rgba(77,71,50,0.3)' stroke-width='1' stroke-dasharray='6,4'/>
+                ")
+
+                @foreach (var region in _regions)
+                {
+                    var explored = IsExplored(region.Id);
+                    var isCurrent = region.Id == (_champion?.CurrentRegionId ?? "");
+                    var fillColor = RegionFill(region.Biome, explored);
+                    var strokeColor = isCurrent ? "#ffd700" : "rgba(77,71,50,0.5)";
+                    var strokeWidth = isCurrent ? "2" : "1";
+                    var opacity = explored ? "1" : "0.35";
+
+                    <g @onclick="() => SelectRegion(region)" style="cursor:pointer">
+                        <circle cx="@region.MapX" cy="@region.MapY" r="28"
+                                fill="@fillColor"
+                                stroke="@strokeColor"
+                                stroke-width="@strokeWidth"
+                                opacity="@opacity"/>
+
+                        @if (!explored)
+                        {
+                            <circle cx="@region.MapX" cy="@region.MapY" r="28"
+                                    fill="#000" opacity="0.5"/>
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='rgba(153,144,119,0.5)' font-size='16' font-family='sans-serif'>?</text>")
+                        }
+                        else
+                        {
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY - 33}' text-anchor='middle' fill='#bfc8ce' font-size='8' font-family='Work Sans, sans-serif' letter-spacing='0.1em' style='pointer-events:none'>{System.Net.WebUtility.HtmlEncode(region.Name)}</text>")
+                            @((MarkupString)$"<text x='{region.MapX}' y='{region.MapY + 5}' text-anchor='middle' fill='#fff6df' font-size='10' font-family='sans-serif' style='pointer-events:none'>{DifficultyPips(region.DifficultyRating)}</text>")
+                        }
+
+                        @if (isCurrent)
+                        {
+                            <circle cx="@region.MapX" cy="@region.MapY" r="36"
+                                    fill="none" stroke="#ffd700" stroke-width="1"
+                                    class="champion-pulse"/>
+                        }
+                    </g>
+                }
+            </svg>
+        </div>
+
+        <!-- Region detail panel -->
+        <div class="gg-region-panel">
+            @if (_selected is null)
+            {
+                <div class="gg-region-panel__header">
+                    <p class="gg-region-panel__title" style="opacity:0.3;font-size:1rem;">Select a region</p>
+                    @if (_champion is not null)
+                    {
+                        <p style="font-size:0.7rem;color:var(--gg-silver);opacity:0.4;margin-top:0.5rem;">
+                            Your champion is in <strong style="color:var(--gg-cream)">@CurrentRegionName</strong>
+                        </p>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="gg-region-panel__header">
+                    <p class="gg-region-panel__title">@_selected.Name</p>
+                    <span class="gg-biome-badge gg-biome-badge--@_selected.Biome.ToLower()" style="margin-top:0.5rem;display:inline-block;">@_selected.Biome</span>
+                </div>
+                <div class="gg-region-panel__body">
+                    <p style="font-size:0.8rem;color:var(--gg-silver);opacity:0.65;margin-bottom:1.5rem;line-height:1.65;">@_selected.Description</p>
+                    <div class="gg-region-stat-grid">
+                        <div class="gg-region-stat">
+                            <span class="gg-region-stat-label">Difficulty</span>
+                            <span class="gg-region-stat-val">@_selected.DifficultyRating / 10</span>
+                        </div>
+                        <div class="gg-region-stat">
+                            <span class="gg-region-stat-label">Min Level</span>
+                            <span class="gg-region-stat-val">@_selected.MinLevelRequired</span>
+                        </div>
+                        <div class="gg-region-stat" style="grid-column:span 2;border-right:none;">
+                            <span class="gg-region-stat-label">Active Events</span>
+                            <span class="gg-region-stat-val" style="font-size:0.85rem;">@_selected.ActiveEventTypes</span>
+                        </div>
+                    </div>
+
+                    @if (_champion is not null && _selected.Id != _champion.CurrentRegionId)
+                    {
+                        <p style="margin-top:1.5rem;font-size:0.7rem;color:var(--gg-silver);opacity:0.45;line-height:1.6;">
+                            Issue <code style="color:var(--gg-gold);background:rgba(255,215,0,0.08);padding:1px 6px;">move to @_selected.Name</code> as your intervention to travel here.
+                        </p>
+                    }
+                    else if (_selected.Id == _champion?.CurrentRegionId)
+                    {
+                        <p style="margin-top:1.5rem;">
+                            <span class="gg-level-badge">Your champion is here</span>
+                        </p>
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+}
+
+<style>
+    .champion-pulse {
+        animation: pulse 2s ease-in-out infinite;
+    }
+    @@keyframes pulse {
+        0%   { opacity: 1; }
+        50%  { opacity: 0.3; }
+        100% { opacity: 1; }
+    }
+</style>
+
+@code {
+    private List<WorldRegionDto> _regions = [];
+    private ChampionDto? _champion;
+    private WorldRegionDto? _selected;
+    private bool _loading = true;
+    private HashSet<string> _exploredIds = [];
+
+    private string CurrentRegionName =>
+        _regions.FirstOrDefault(r => r.Id == _champion?.CurrentRegionId)?.Name
+        ?? _champion?.CurrentRegionId ?? "Unknown";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var regionsTask = Api.GetWorldRegionsAsync();
+        var championTask = Api.GetMyChampionAsync();
+        await Task.WhenAll(regionsTask, championTask);
+        _regions = regionsTask.Result;
+        _champion = championTask.Result;
+
+        if (_champion is not null)
+        {
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<string>>(_champion.ExploredRegionIds);
+                _exploredIds = list is not null ? [.. list] : [_champion.CurrentRegionId];
+            }
+            catch
+            {
+                _exploredIds = [_champion.CurrentRegionId];
+            }
+        }
+
+        _loading = false;
+    }
+
+    private bool IsExplored(string regionId) =>
+        _exploredIds.Contains(regionId) || regionId == _champion?.CurrentRegionId;
+
+    private void SelectRegion(WorldRegionDto region) => _selected = region;
+
+    private static string RegionFill(string biome, bool explored)
+    {
+        if (!explored) return "rgba(19,19,23,0.8)";
+        return biome switch
+        {
+            "Safe"      => "rgba(45,106,79,0.5)",
+            "Normal"    => "rgba(123,79,18,0.5)",
+            "Dangerous" => "rgba(147,0,10,0.5)",
+            _           => "rgba(77,71,50,0.3)"
+        };
+    }
+
+    private static string DifficultyPips(int rating) =>
+        string.Concat(Enumerable.Repeat("●", Math.Min(rating, 5))) +
+        string.Concat(Enumerable.Repeat("○", Math.Max(0, 5 - rating)));
+
+    private static string BiomeBadge(string biome) => biome switch
+    {
+        "Safe"      => "bg-success",
+        "Normal"    => "bg-warning text-dark",
+        "Dangerous" => "bg-danger",
+        _           => "bg-secondary"
+    };
+}

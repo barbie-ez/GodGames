@@ -1,0 +1,97 @@
+@page "/leaderboard"
+@inject GodGamesApiClient Api
+
+<PageTitle>Leaderboard — God Games</PageTitle>
+
+<h1 class="gg-page-title">Leaderboard</h1>
+<div class="gg-page-title-rule"></div>
+
+@if (_loading)
+{
+    <div class="gg-loading">
+        <div class="spinner-border" role="status" style="width:1.5rem;height:1.5rem;border-width:1px;"></div>
+        <span>Loading rankings…</span>
+    </div>
+}
+else if (_entries.Count == 0)
+{
+    <p class="gg-empty-state">No champions have entered the world yet.</p>
+}
+else
+{
+    <table class="gg-lb-table">
+        <thead>
+            <tr>
+                <th style="width:60px;">#</th>
+                <th>Name</th>
+                <th>Class</th>
+                <th>Level</th>
+                <th>XP</th>
+                <th>Biome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in _entries)
+            {
+                <tr class="@(entry.Rank <= 3 ? "gg-lb-top" : "")">
+                    <td>
+                        @if (entry.Rank == 1)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--gold">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else if (entry.Rank == 2)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--silver">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else if (entry.Rank == 3)
+                        {
+                            <span class="gg-lb-medal gg-lb-rank--bronze">
+                                <span class="material-symbols-outlined">military_tech</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="gg-lb-rank-num" style="color:var(--gg-silver);opacity:0.4;">@entry.Rank</span>
+                        }
+                    </td>
+                    <td class="gg-lb-name">@entry.Name</td>
+                    <td><span class="gg-lb-status">@entry.Class</span></td>
+                    <td style="font-family:'Newsreader',serif;">@entry.Level</td>
+                    <td style="font-family:'Newsreader',serif;">@entry.XP</td>
+                    <td><span class="gg-biome-badge gg-biome-badge--@entry.Biome.ToString().ToLower()">@entry.Biome</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<LeaderboardEntryDto> _entries = [];
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _entries = await Api.GetLeaderboardAsync();
+        _loading = false;
+    }
+
+    private static string ClassBadge(ChampionClass c) => c switch
+    {
+        ChampionClass.Warrior => "bg-danger",
+        ChampionClass.Mage    => "bg-primary",
+        ChampionClass.Rogue   => "bg-dark",
+        _                     => "bg-secondary"
+    };
+
+    private static string BiomeBadge(Biome b) => b switch
+    {
+        Biome.Safe      => "bg-success",
+        Biome.Normal    => "bg-warning text-dark",
+        Biome.Dangerous => "bg-danger",
+        _               => "bg-secondary"
+    };
+}

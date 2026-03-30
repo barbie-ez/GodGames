@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:GodGames.Mobile.ViewModels"
+             x:Class="GodGames.Mobile.Views.CreateChampionPage"
+             x:DataType="vm:CreateChampionViewModel"
+             Title=""
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView BackgroundColor="{StaticResource GgBg}">
+        <VerticalStackLayout Padding="24,48,24,32" Spacing="0">
+
+            <Label Text="SUMMON YOUR"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="11"
+                   CharacterSpacing="4"
+                   TextColor="{StaticResource GgOutline}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,4" />
+            <Label Text="Champion"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="32"
+                   TextColor="{StaticResource GgGold}"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,8" />
+            <Label Text="Choose wisely. This soul carries your legacy across the eternal void."
+                   FontSize="12"
+                   TextColor="{StaticResource GgSilver}"
+                   Opacity="0.5"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,0,0,36" />
+
+            <Border BackgroundColor="{StaticResource GgSurfaceLow}" Padding="0">
+                <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                <VerticalStackLayout Spacing="0">
+                    <BoxView HeightRequest="2" BackgroundColor="{StaticResource GgGold}" />
+                    <VerticalStackLayout Padding="24,28,24,28" Spacing="28">
+
+                        <!-- Error -->
+                        <Border BackgroundColor="#3b000a" Padding="12,10"
+                                IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotEmptyConverter}}">
+                            <Border.StrokeShape><Rectangle /></Border.StrokeShape>
+                            <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource GgError}" FontSize="12" />
+                        </Border>
+
+                        <!-- Name -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="CHAMPION NAME" FontSize="9" CharacterSpacing="3" TextColor="{StaticResource GgOutline}" />
+                            <Entry Text="{Binding Name}"
+                                   Placeholder="e.g. Aldric the Bold"
+                                   FontSize="16"
+                                   ReturnType="Next" />
+                            <BoxView HeightRequest="1" BackgroundColor="{StaticResource GgOutlineVar}" />
+                        </VerticalStackLayout>
+
+                        <!-- Class -->
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="SELECT CALLING" FontSize="9" CharacterSpacing="3" TextColor="{StaticResource GgOutline}" />
+                            <Picker ItemsSource="{Binding Classes}"
+                                    SelectedIndex="{Binding SelectedClassIndex}"
+                                    Title="Choose a class"
+                                    BackgroundColor="{StaticResource GgSurfaceMid}"
+                                    TextColor="{StaticResource GgCream}"
+                                    TitleColor="{StaticResource GgOutline}"
+                                    FontSize="14" />
+                        </VerticalStackLayout>
+
+                        <!-- Personality -->
+                        <VerticalStackLayout Spacing="12">
+                            <Label Text="SPIRIT ALIGNMENT" FontSize="9" CharacterSpacing="3" TextColor="{StaticResource GgOutline}" />
+                            <Picker ItemsSource="{Binding Traits}"
+                                    SelectedIndex="{Binding SelectedTraitIndex}"
+                                    Title="Choose a trait"
+                                    BackgroundColor="{StaticResource GgSurfaceMid}"
+                                    TextColor="{StaticResource GgCream}"
+                                    TitleColor="{StaticResource GgOutline}"
+                                    FontSize="14" />
+                        </VerticalStackLayout>
+
+                        <!-- Submit -->
+                        <Button Text="{Binding IsBusy, Converter={StaticResource BusyToTextConverter}, ConverterParameter='SUMMONING…|SUMMON CHAMPION'}"
+                                Command="{Binding CreateCommand}"
+                                IsEnabled="{Binding IsNotBusy}"
+                                BackgroundColor="{StaticResource GgGold}"
+                                TextColor="{StaticResource GgOnGold}"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="11"
+                                CharacterSpacing="3"
+                                CornerRadius="0"
+                                Padding="0,18" />
+
+                        <Label Text="Once summoned, the archive remains eternal."
+                               FontSize="10"
+                               TextColor="{StaticResource GgSilver}"
+                               Opacity="0.3"
+                               HorizontalTextAlignment="Center" />
+
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

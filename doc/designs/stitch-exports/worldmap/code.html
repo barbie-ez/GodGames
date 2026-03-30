@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,200..800&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#293137",
+              "surface-container": "#1f1f23",
+              "surface-bright": "#39393d",
+              "primary-fixed": "#ffe16d",
+              "on-secondary-container": "#b1b9c0",
+              "on-surface-variant": "#d0c6ab",
+              "error-container": "#93000a",
+              "on-tertiary-fixed-variant": "#5d4200",
+              "surface-container-lowest": "#0e0e12",
+              "on-primary-fixed-variant": "#544600",
+              "inverse-primary": "#705d00",
+              "tertiary-fixed-dim": "#f7bd48",
+              "secondary-fixed": "#dbe4ea",
+              "on-tertiary": "#412d00",
+              "on-primary": "#3a3000",
+              "on-error-container": "#ffdad6",
+              "on-primary-fixed": "#221b00",
+              "on-tertiary-fixed": "#271900",
+              "tertiary-fixed": "#ffdea6",
+              "surface-tint": "#e9c400",
+              "surface": "#131317",
+              "on-secondary-fixed-variant": "#40484d",
+              "surface-dim": "#131317",
+              "on-surface": "#e5e1e7",
+              "inverse-surface": "#e5e1e7",
+              "surface-container-highest": "#353439",
+              "on-primary-container": "#705e00",
+              "tertiary": "#fff5ea",
+              "tertiary-container": "#ffd486",
+              "surface-container-low": "#1b1b1f",
+              "background": "#131317",
+              "primary-fixed-dim": "#e9c400",
+              "primary-container": "#ffd700",
+              "outline": "#999077",
+              "on-secondary-fixed": "#151d22",
+              "on-tertiary-container": "#7c5900",
+              "secondary-container": "#424a50",
+              "primary": "#fff6df",
+              "on-error": "#690005",
+              "inverse-on-surface": "#303034",
+              "secondary": "#bfc8ce",
+              "outline-variant": "#4d4732",
+              "error": "#ffb4ab",
+              "surface-variant": "#353439",
+              "secondary-fixed-dim": "#bfc8ce",
+              "surface-container-high": "#2a292e",
+              "on-background": "#e5e1e7"
+            },
+            fontFamily: {
+              "headline": ["Newsreader"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #050508;
+            color: #e5e1e7;
+            font-family: 'Work Sans', sans-serif;
+            overflow: hidden;
+        }
+        .serif-headline {
+            font-family: 'Newsreader', serif;
+        }
+        .map-grid {
+            background-image: radial-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .constellation-line {
+            stroke: rgba(255, 215, 0, 0.2);
+            stroke-dasharray: 8 4;
+        }
+        .glow-pulse {
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background-color: rgba(19, 19, 23, 0.7);
+        }
+    </style>
+</head>
+<body class="dark bg-[#050508]">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 z-50 bg-[#050508] dark:bg-[#050508] docked left-0 h-screen w-64 border-r-0 bg-gradient-to-r from-[#131317] to-transparent shadow-[40px_0_40px_rgba(255,215,0,0.05)]">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-serif tracking-widest text-[#FFD700] drop-shadow-[0_0_10px_rgba(255,215,0,0.3)] font-['Newsreader'] uppercase">God Games</h1>
+<p class="font-['Newsreader'] tracking-[0.05em] uppercase text-[#bfc8ce] opacity-70 text-xs mt-1">The Astral Archive</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard -->
+<div class="group px-8 py-4 flex items-center space-x-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 transition-opacity duration-500 hover:bg-[#1b1b1f] hover:text-[#FFD700]">
+<span class="material-symbols-outlined text-xl" data-icon="dashboard">dashboard</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Dashboard</span>
+</div>
+<!-- Chronicle -->
+<div class="group px-8 py-4 flex items-center space-x-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 transition-opacity duration-500 hover:bg-[#1b1b1f] hover:text-[#FFD700]">
+<span class="material-symbols-outlined text-xl" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Chronicle</span>
+</div>
+<!-- World Map (Active) -->
+<div class="group px-8 py-4 flex items-center space-x-4 cursor-pointer active:scale-95 ease-in-out text-[#fff6df] border-l-4 border-[#FFD700] bg-white/5 backdrop-blur-md">
+<span class="material-symbols-outlined text-xl" data-icon="public">public</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">World Map</span>
+</div>
+<!-- Leaderboard -->
+<div class="group px-8 py-4 flex items-center space-x-4 cursor-pointer active:scale-95 ease-in-out text-[#bfc8ce] opacity-70 hover:opacity-100 transition-opacity duration-500 hover:bg-[#1b1b1f] hover:text-[#FFD700]">
+<span class="material-symbols-outlined text-xl" data-icon="leaderboard">leaderboard</span>
+<span class="font-['Newsreader'] tracking-[0.05em] uppercase text-sm">Leaderboard</span>
+</div>
+</nav>
+<div class="px-8 mt-auto">
+<button class="w-full py-4 bg-gradient-to-br from-primary-fixed-dim to-primary text-on-primary font-['Work Sans'] font-bold tracking-widest uppercase text-xs active:scale-95 transition-transform duration-300">
+                Ascend
+            </button>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 z-40 bg-[#131317]/70 backdrop-blur-xl flex justify-end items-center px-12 h-20 w-[calc(100%-16rem)] ml-64 no-border space-y-4 slow-fade-in">
+<div class="flex items-center space-x-8">
+<div class="flex space-x-6 text-[#bfc8ce]">
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-[#fff6df] transition-colors duration-500" data-icon="settings">settings</span>
+</div>
+<div class="flex items-center space-x-4 pl-8 border-l border-outline-variant/30">
+<div class="text-right">
+<p class="font-['Newsreader'] font-light tracking-widest text-[#fff6df] text-sm">Divine Essence</p>
+<p class="font-['Work Sans'] text-[10px] text-primary opacity-60 uppercase tracking-tighter">Overlord rank</p>
+</div>
+<img class="w-10 h-10 object-cover border border-primary/20" data-alt="dramatic portrait of a celestial being with glowing white eyes and obsidian skin against a starry background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKMrQKdyeFpYEquZ1yW61XL5wIpvL7VKduyCyrs2RFBqGHXRZkFQbKXXOQkFEa7c9dXt0glTTU4TchGdQoyMi2aQ6iCgQwuXMlwoSMhTYH5BuaZCtH3VP10JWWbgz_715ONY8zJ__3rSMi5fsxp973bLqbejXOHy6pFRTQVYYmVoELzlvykP_vz8AY2S49cFsypzmHx0uF0nX0ZmS3C8-9VYu30wfNkanoE8-rQHp_d5RmXVQpy5M85tX2wHb8CWjy667tu0ZFs10"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 h-screen flex relative overflow-hidden">
+<!-- LEFT PANEL: The Map -->
+<section class="flex-1 relative map-grid">
+<!-- Map Background Textures -->
+<div class="absolute inset-0 bg-[#050508] opacity-60"></div>
+<!-- SVG Constellation Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none">
+<line class="constellation-line" x1="20%" x2="45%" y1="30%" y2="25%"></line>
+<line class="constellation-line" x1="45%" x2="70%" y1="25%" y2="45%"></line>
+<line class="constellation-line" x1="45%" x2="40%" y1="25%" y2="60%"></line>
+<line class="constellation-line" x1="40%" x2="20%" y1="60%" y2="80%"></line>
+<line class="constellation-line" x1="70%" x2="60%" y1="45%" y2="85%"></line>
+</svg>
+<!-- Map Markers -->
+<div class="absolute top-[30%] left-[20%] group cursor-pointer">
+<div class="w-3 h-3 bg-secondary rounded-full shadow-[0_0_10px_#bfc8ce]"></div>
+<div class="mt-4 absolute -left-12 text-center w-32 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+<span class="serif-headline text-xs tracking-widest text-secondary uppercase">Iron Peaks</span>
+</div>
+</div>
+<!-- ACTIVE REGION: Verdant Vale -->
+<div class="absolute top-[25%] left-[45%] group cursor-pointer">
+<div class="w-5 h-5 bg-primary-container rounded-full glow-pulse ring-4 ring-primary-container/20 ring-offset-4 ring-offset-[#050508] animate-pulse"></div>
+<div class="mt-6 absolute -left-16 text-center w-40">
+<span class="serif-headline text-sm tracking-widest text-primary-container uppercase font-bold drop-shadow-lg">Verdant Vale</span>
+</div>
+</div>
+<div class="absolute top-[45%] left-[70%] group cursor-pointer">
+<div class="w-3 h-3 bg-secondary rounded-full shadow-[0_0_10px_#bfc8ce]"></div>
+<div class="mt-4 absolute -left-12 text-center w-32 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+<span class="serif-headline text-xs tracking-widest text-secondary uppercase">Crystal Sea</span>
+</div>
+</div>
+<div class="absolute top-[60%] left-[40%] group cursor-pointer">
+<div class="w-3 h-3 bg-secondary rounded-full shadow-[0_0_10px_#bfc8ce]"></div>
+<div class="mt-4 absolute -left-12 text-center w-32 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+<span class="serif-headline text-xs tracking-widest text-secondary uppercase">Ashen Wastes</span>
+</div>
+</div>
+<!-- Map HUD -->
+<div class="absolute bottom-12 left-12 flex space-x-6">
+<div class="bg-surface-container-low p-6 flex items-center space-x-4 border-l border-primary-container">
+<span class="material-symbols-outlined text-primary-container" data-icon="explore">explore</span>
+<div>
+<p class="text-[10px] uppercase tracking-[0.2em] text-secondary opacity-60">Celestial Coordinates</p>
+<p class="serif-headline text-lg text-primary tracking-widest">48.2N / 12.5E</p>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 flex items-center space-x-4 border-l border-outline-variant">
+<span class="material-symbols-outlined text-outline" data-icon="visibility">visibility</span>
+<div>
+<p class="text-[10px] uppercase tracking-[0.2em] text-secondary opacity-60">Visibility</p>
+<p class="serif-headline text-lg text-primary tracking-widest">98.4% Clear</p>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT PANEL: Region Details -->
+<section class="w-[450px] h-full bg-surface-container-low border-l border-outline-variant/10 flex flex-col z-10 overflow-y-auto">
+<!-- Region Hero Image -->
+<div class="relative h-80 overflow-hidden">
+<img class="w-full h-full object-cover grayscale-[0.3] brightness-75 hover:grayscale-0 transition-all duration-1000" data-alt="ethereal lush green valley with floating islands and waterfalls glowing with golden magic light during twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3NDMOLHggoje1XNqhT9n2MTDH10C1gmxuOh2TjpfSZ9bT0XIDNWPXIh7p6oJbzxZV5HJH6cvsveTS_uGFDo-2-xu4dTY2HRizR0BHHMrclHYPPKYMkR93543ouMLOSJtlvrZ2UoH3p4j2JGFZ40kc1SIdLwS26P05EaGD4ayDy7QwrFdnbjREpY7qOR24YNNPtUVf6QDI1fMXEZe9Xluklp_uZnosnmRD9TbU4t9WWtWPWOcx816880QF9mQHSNmcJ1xS_k4znZg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-transparent to-transparent"></div>
+<div class="absolute bottom-8 left-8 right-8">
+<div class="flex items-center space-x-3 mb-2">
+<span class="px-2 py-0.5 bg-primary-container text-on-primary text-[10px] font-bold uppercase tracking-widest">Active Territory</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-secondary text-[10px] font-medium uppercase tracking-widest">Tier III Biome</span>
+</div>
+<h2 class="serif-headline text-4xl text-primary font-bold tracking-tight">Verdant Vale</h2>
+</div>
+</div>
+<div class="p-8 space-y-10">
+<!-- Biome Badge & Stats -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-high p-4 relative">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-radial from-primary-container/10 to-transparent pointer-events-none"></div>
+<p class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-1">Difficulty</p>
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-primary-container text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary-container text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary-container text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-primary-container text-sm" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-outline-variant text-sm" data-icon="star">star</span>
+</div>
+</div>
+<div class="bg-surface-container-high p-4 relative">
+<p class="text-[10px] uppercase tracking-widest text-secondary opacity-60 mb-1">Resources</p>
+<div class="serif-headline text-primary tracking-widest">Abundant</div>
+</div>
+</div>
+<!-- Description -->
+<div>
+<h3 class="serif-headline text-lg text-primary-container tracking-widest uppercase mb-4">The Primordial Bloom</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed font-light">
+                        Where the first light touched the obsidian surface of the world, the Verdant Vale was born. A sanctuary of eternal spring, its floating groves are sustained by the resonance of the World-Heart. Here, magic flows like rivers of liquid gold through the roots of the ancient Silver-Bark trees.
+                    </p>
+</div>
+<!-- Regional Traits -->
+<div class="space-y-4">
+<div class="flex items-start space-x-4">
+<span class="material-symbols-outlined text-primary-container mt-1" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+<div>
+<h4 class="serif-headline text-sm text-primary tracking-widest">Divine Resonance</h4>
+<p class="text-xs text-secondary opacity-70">Spells cast within this region gain 15% potency.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<span class="material-symbols-outlined text-primary-container mt-1" data-icon="tsunami">tsunami</span>
+<div>
+<h4 class="serif-headline text-sm text-primary tracking-widest">Ethereal Winds</h4>
+<p class="text-xs text-secondary opacity-70">Flight and movement speed increased by 20%.</p>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<div class="pt-8 flex flex-col space-y-4">
+<button class="w-full py-5 bg-gradient-to-br from-primary-fixed-dim to-primary text-on-primary font-bold tracking-[0.3em] uppercase text-xs active:scale-95 transition-all duration-300">
+                        Deploy Avatar
+                    </button>
+<button class="w-full py-5 bg-transparent border border-outline-variant/30 text-primary font-bold tracking-[0.3em] uppercase text-xs hover:border-primary transition-all duration-500">
+                        Scan for Anomalies
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Map Controls -->
+<div class="fixed bottom-12 right-[480px] flex flex-col space-y-4 z-50">
+<button class="w-12 h-12 glass-panel flex items-center justify-center text-primary-container border border-primary-container/20 hover:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<button class="w-12 h-12 glass-panel flex items-center justify-center text-primary-container border border-primary-container/20 hover:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="remove">remove</span>
+</button>
+<button class="w-12 h-12 glass-panel flex items-center justify-center text-primary-container border border-primary-container/20 hover:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined" data-icon="my_location">my_location</span>
+</button>
+</div>
+</body></html>

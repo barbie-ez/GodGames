@@ -1,23 +1,18 @@
+using GodGames.Application.Jobs;
+using Hangfire;
+
 namespace GodGames.Worker;
 
-public class Worker : BackgroundService
+public class Worker(IRecurringJobManager jobManager) : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
-
-    public Worker(ILogger<Worker> logger)
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger = logger;
-    }
+        // Register the world tick job to run every 6 hours
+        jobManager.AddOrUpdate<WorldTickJob>(
+            "world-tick",
+            job => job.ExecuteAsync(),
+            "0 */6 * * *");
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            if (_logger.IsEnabled(LogLevel.Information))
-            {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            }
-            await Task.Delay(1000, stoppingToken);
-        }
+        return Task.CompletedTask;
     }
 }
